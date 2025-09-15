@@ -1,5 +1,7 @@
 let env = 'uat';
 let envData: any;
+let domain = 'unibank.tval.online';
+let folder = 'unibank-validator-server';
 
 envData = {
     "dev": {
@@ -16,15 +18,14 @@ envData = {
         LDAP_USERNAME: 'admin@teinsa-pa.com',
         LDAP_PASSWORD: '{"iv":"b22dc34c32a3a80d73ae978c0532f982","content":"a47edc0172dea80dc1"}',
         WHITELIST: {
-            HTTP: 'http://teinsa-validator.web.app/',
-            HTTPS: 'https://teinsa-validator.web.app/'
+            HTTP: 'http://' + domain + '/',
+            HTTPS: 'https://' + domain + '/'
         },
         SYSPATH: {
-            TXT_ARCHIVE: '/Users/jherrera/WebstormProjects/teinsa-validator-server/data/',
-            LOG_ARCHIVE: '/Users/jherrera/WebstormProjects/teinsa-validator-server/logs/',
-            WEB_ARCHIVE: '/var/www/apis.validator.teinsa_pa_com/teinsa-validator-server/archive',
-            TST_ARCHIVE: '/Users/jherrera/WebstormProjects/teinsa-validator-server/src/test/'
-
+            TXT_ARCHIVE: '/Users/jherrera/WebstormProjects/' + folder + '/data/',
+            LOG_ARCHIVE: '/Users/jherrera/WebstormProjects/' + folder + '/logs/',
+            WEB_ARCHIVE: '/Users/jherrera/WebstormProjects/' + folder + '/archive',
+            TST_ARCHIVE: '/Users/jherrera/WebstormProjects/' + folder + '/static/index.html'
         },
         DBS: {
             SQL_SYS: {
@@ -62,15 +63,14 @@ envData = {
         LDAP_USERNAME: 'admin@teinsa-pa.com',
         LDAP_PASSWORD: '{"iv":"b22dc34c32a3a80d73ae978c0532f982","content":"a47edc0172dea80dc1"}',
         WHITELIST: {
-            HTTP: 'http://teinsa-validator.web.app/',
-            HTTPS: 'https://teinsa-validator.web.app/'
+            HTTP: 'http://' + domain + '/',
+            HTTPS: 'https://' + domain + '/'
         },
         SYSPATH: {
-            TXT_ARCHIVE: '/Users/jherrera/WebstormProjects/teinsa-validator-server/data/',
-            LOG_ARCHIVE: '/Users/jherrera/WebstormProjects/teinsa-validator-server/logs/',
-            WEB_ARCHIVE: '/var/www/apis.validator.teinsa_pa_com/teinsa-validator-server/archive',
-            TST_ARCHIVE: '/Users/jherrera/WebstormProjects/teinsa-validator-server/src/test/'
-
+            TXT_ARCHIVE: '/var/teinsa/' + folder + '/data/',
+            LOG_ARCHIVE: '/var/teinsa/' + folder + '/logs/',
+            WEB_ARCHIVE: '/var/teinsa/' + folder + '/archive',
+            TST_ARCHIVE: '/var/teinsa/' + folder + '/static/index.html'
         },
         DBS: {
             SQL_SYS: {
@@ -108,14 +108,14 @@ envData = {
         LDAP_USERNAME: 'mtbadteinsa@metrobank.local',
         LDAP_PASSWORD: '{"iv":"7e849ddb2db9d2fc05232a3db5659697","content":"b365c51be70b8a306ddf77370fe56aa7db249dc6"}',
         WHITELIST: {
-            HTTP: 'http://mtbteintest:8080',
-            HTTPS: 'https://mtbteintest/'
+            HTTP: 'http://' + domain + '/',
+            HTTPS: 'https://' + domain + '/'
         },
         SYSPATH: {
-            TXT_ARCHIVE: 'C:\\teinsa\\atomos\\data',
-            LOG_ARCHIVE: 'C:\\teinsa\\atomos\\logs',
-            WEB_ARCHIVE: 'C:\\teinsa\\atomos\\logs',
-            TST_ARCHIVE: 'C:\\inetpub\\validator-apis\\test\\index.html'
+            TXT_ARCHIVE: 'C:\\teinsa\\' + folder + '\\data',
+            LOG_ARCHIVE: 'C:\\teinsa\\' + folder + '\\logs',
+            WEB_ARCHIVE: 'C:\\teinsa\\' + folder + '\\logs',
+            TST_ARCHIVE: 'C:\\inetpub\\' + folder + '\\static\\index.html'
         },
         DBS: {
             SQL_SYS: {
@@ -137,7 +137,7 @@ envData = {
                 MSSQL_ENABLE_ARITHABORT: true,
             }
         },
-        LDAP_GROUP_O0: 'TEINSA_VALIDADOR_TEST'
+        LDAP_GROUP_O0: 'TEINSA_VALIDADOR_PRO'
     }
 }
 

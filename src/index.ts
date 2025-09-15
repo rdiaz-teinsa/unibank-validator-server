@@ -22,8 +22,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/usuarios/', userRoutes);
 app.use('/reportes/', reportRoutes);
 app.use('/validador/', validationRoutes);
-app.use('/test', express.static(globalVars.SYSPATH.TST_ARCHIVE))
 app.use('/archive', express.static(globalVars.SYSPATH.WEB_ARCHIVE));
+app.use('/test', express.static(globalVars.SYSPATH.TST_ARCHIVE))
 
 async function initializeService() {
     const server = app.listen(app.get('port'));

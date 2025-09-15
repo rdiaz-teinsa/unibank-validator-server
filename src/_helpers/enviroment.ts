@@ -28,7 +28,7 @@ envData = {
         },
         DBS: {
             SQL_SYS: {
-                MSSQL_SERVER: 'validator.teinsa-pa.com',
+                MSSQL_SERVER: '34.199.202.170',
                 MSSQL_PORT: '1433',
                 MSSQL_DATABASE: 'TEINSA_VAL',
                 MSSQL_USER: 'sa',
@@ -50,6 +50,52 @@ envData = {
     },
     "uat": {
         NODE_ENV: 'certification',
+        NODE_OS: 'Linux',
+        VERSION: '1.02',
+        HTTP_PORT: '7443',
+        ALGORITHM: 'aes-256-ctr',
+        TOKEN_PASSPHRASE: '4onZYjWeJthAaNcSdCUTsPfg',
+        SECRET_PASSPHRASE: 'vOVH6sdmpNWjRRIqCc7rdxs01lwHzfr3',
+        LDAP_URL_NS: 'ldap://teinsa-pa',
+        LDAP_URL: 'ldap://0.0.0.0',
+        LDAP_BASE_DN: 'DC=teinsa-pa,DC=com',
+        LDAP_USERNAME: 'admin@teinsa-pa.com',
+        LDAP_PASSWORD: '{"iv":"b22dc34c32a3a80d73ae978c0532f982","content":"a47edc0172dea80dc1"}',
+        WHITELIST: {
+            HTTP: 'http://teinsa-validator.web.app/',
+            HTTPS: 'https://teinsa-validator.web.app/'
+        },
+        SYSPATH: {
+            TXT_ARCHIVE: '/Users/jherrera/WebstormProjects/teinsa-validator-server/data/',
+            LOG_ARCHIVE: '/Users/jherrera/WebstormProjects/teinsa-validator-server/logs/',
+            WEB_ARCHIVE: '/var/www/apis.validator.teinsa_pa_com/teinsa-validator-server/archive',
+            TST_ARCHIVE: '/Users/jherrera/WebstormProjects/teinsa-validator-server/src/test/'
+
+        },
+        DBS: {
+            SQL_SYS: {
+                MSSQL_SERVER: '34.199.202.170',
+                MSSQL_PORT: '1433',
+                MSSQL_DATABASE: 'TEINSA_CONFIG',
+                MSSQL_USER: 'sa',
+                MSSQL_PASSWORD: '{"iv":"3b5df530ada5213dddc55cfe700ac6a3","content":"cf623a88376d8a3309ac66bca589305a9ed8d30c051e"}',
+                MSSQL_ENCRYPT: true,
+                MSSQL_ENABLE_ARITHABORT: true,
+            },
+            SQL_DATA: {
+                MSSQL_SERVER: '34.199.202.170',
+                MSSQL_PORT: '1433',
+                MSSQL_DATABASE: 'TEINSA_VAL',
+                MSSQL_USER: 'sa',
+                MSSQL_PASSWORD: '{"iv":"3b5df530ada5213dddc55cfe700ac6a3","content":"cf623a88376d8a3309ac66bca589305a9ed8d30c051e"}',
+                MSSQL_ENCRYPT: true,
+                MSSQL_ENABLE_ARITHABORT: true,
+            }
+        },
+        LDAP_GROUP_O0: 'TEINSA_VALIDADOR_UAT'
+    },
+    "pro": {
+        NODE_ENV: 'production',
         NODE_OS: 'WIN',
         VERSION: '0.90',
         HTTP_PORT: '7443',

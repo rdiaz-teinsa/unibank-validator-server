@@ -1,17 +1,14 @@
 ﻿{
   "name": "teinsa-validator-backend-services",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Módulo de Backend del Sistema Validador de Átomos.",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon",
-    "dbTest": "ts-node --files src/_helpers/database.ts",
     "test": "ts-node --files src/index.ts",
-    "start": "node --max-old-space-size=5120 ./dist/index.js",
-    "service": "node ./dist/service.js",
     "build": "npx tsc",
-    "validate": "ts-node --files src/_helpers/validate.ts",
-    "xvalidate": "node --max-old-space-size=8192 ./dist/_helpers/validate.js"
+    "start": "node --max-old-space-size=5120 ./dist/index.js",
+    "service": "node ./dist/service.js"
   },
   "keywords": [
     "Authentication",
@@ -59,6 +56,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://bitbucket.org/wiconiodevelopment/teinsa-validator-server.git"
+    "url": "https://github.com/rdiaz-teinsa/unibank-validator-server.git"
   }
 }

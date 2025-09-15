@@ -1,0 +1,180 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "C:\\inetpub\\validator-apis\\src\\syslogs\\.464018c015a4f79233bebf15b8c556f99d4de34e-audit.json",
+    "files": [
+        {
+            "date": 1755804088831,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-08-21-14.log",
+            "hash": "061ba02e47c77f6829e6046f5aadf8a821537f7048174b77afa90244836531b6"
+        },
+        {
+            "date": 1756146961835,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-08-25-13.log",
+            "hash": "01dfa9129a55322ce435ba8f538a8357b016dbc5075808ffa163d1f7056e4f14"
+        },
+        {
+            "date": 1756154860122,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-08-25-15.log",
+            "hash": "675a3f611ebf2fb6106fca8abf08445e6c1042525ad61a2461836867f22ae691"
+        },
+        {
+            "date": 1756155646855,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-08-25-16.log",
+            "hash": "70a71eca04d27c8583a9fc040cc31e76790824cc26e7ac554b76caab92ad4de1"
+        },
+        {
+            "date": 1756217724524,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-08-26-09.log",
+            "hash": "7c036ff56dadb00825a486af6d5b7c7e73dfff4df7c8500e07c36febeec2d0e0"
+        },
+        {
+            "date": 1756236979669,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-08-26-14.log",
+            "hash": "f8c959ed222437ad6d0cea505f4275446df93be325b662cb980be85eb79bc65c"
+        },
+        {
+            "date": 1756318019104,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-08-27-13.log",
+            "hash": "84841f10b31ba0ca3b883ec282e7e905c46f8d9b1b6a751e2b2cd5cf8887ebe6"
+        },
+        {
+            "date": 1756326231922,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-08-27-15.log",
+            "hash": "8c5fca0cff34b8ba3b908b39f17bd1fe1ed391c896c0914e3d61758813a4366d"
+        },
+        {
+            "date": 1756330839242,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-08-27-16.log",
+            "hash": "c2d5a7098ed06332fdc40b77c5c7720f38c799844ced69191f42a5e9bdb0c735"
+        },
+        {
+            "date": 1756332200681,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-08-27-17.log",
+            "hash": "f65de9e23e2b1741340bcb7ebde4edf16e1f1d8a811bfb60e5555268e8fdb946"
+        },
+        {
+            "date": 1756389444652,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-08-28-08.log",
+            "hash": "4b5569ee782dd9964ee73eb6bf6ab763a1e5bcc5292e97a7329519ed34815666"
+        },
+        {
+            "date": 1756393576508,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-08-28-10.log",
+            "hash": "4524b53b6329af9e6fa5e16a748027118c3155e21f752acbd0dfbc37baf1f780"
+        },
+        {
+            "date": 1756396982370,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-08-28-11.log",
+            "hash": "5f7f9d00572a1327d813dfc07dd2c3d4288dbe86fd6957d6e99c3d80e2d573c2"
+        },
+        {
+            "date": 1756413044479,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-08-28-15.log",
+            "hash": "914e4f50a66f6f9e7cbc3a003a191316853fa43e3912d84a003956eae3b1f1aa"
+        },
+        {
+            "date": 1756417140058,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-08-28-16.log",
+            "hash": "18aea1370389c36f3bc742d93e7b4144737a8b08d56bb6679d3e086a2892882e"
+        },
+        {
+            "date": 1756419932893,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-08-28-17.log",
+            "hash": "caefbf43d0d87463b380a0b0a1e10653e0e8e0a9c59462f3f8f3e85750a67e17"
+        },
+        {
+            "date": 1756481564095,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-08-29-10.log",
+            "hash": "ed0878bac16934a6831ee6f72ad7eacc6daf8075bd171233490253a6810f3582"
+        },
+        {
+            "date": 1756485218869,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-08-29-11.log",
+            "hash": "607dbbb3351255b6ddceda54fb141075c813bc8bce89aab4e6749d0b03050446"
+        },
+        {
+            "date": 1756488852968,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-08-29-12.log",
+            "hash": "beb5fff1c9bc64558c83a3ff906d522e252a88b4dab1f455556dd89282157ce9"
+        },
+        {
+            "date": 1756500403982,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-08-29-15.log",
+            "hash": "003155730c7cec604924c64cef5dd108df771b5022d5ca3a912b0c0f6b49e817"
+        },
+        {
+            "date": 1756514159710,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-08-29-19.log",
+            "hash": "3d06f8eb52da5044fef60672867f801b94830333696f02541ca52e4b2957fa00"
+        },
+        {
+            "date": 1756831753269,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-09-02-11.log",
+            "hash": "1961e10b2d00e1d27407ecb390418f5ca0b62ce95b61f9a9987fca61f02b4945"
+        },
+        {
+            "date": 1757015236543,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-09-04-14.log",
+            "hash": "ca430aeea8449fd9cbf2d27e5092a238589136204925e7d717c4d3a00a1d4e09"
+        },
+        {
+            "date": 1757342375050,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-09-08-09.log",
+            "hash": "137d47decd423c530c2e918195cf0eb3c253de2d04bade55d0ce4556cd21e2f7"
+        },
+        {
+            "date": 1757432408944,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-09-09-10.log",
+            "hash": "38299582ed3668d488556c8036b74d3a772dac7483817c7f9691d441daf6427f"
+        },
+        {
+            "date": 1757600652212,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-09-11-09.log",
+            "hash": "dc6bfe96aafe06b96c62d76ff8f8731189f7ab73e57f74af6497f49539a07866"
+        },
+        {
+            "date": 1757604372393,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-09-11-10.log",
+            "hash": "19fbe2dd6dd90942faee509d8c42c20fe171946c22e655f6b68abb528cb2b549"
+        },
+        {
+            "date": 1757647638169,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-09-11-22.log",
+            "hash": "ff56548ef2f1f1379b75844cb2d42e54bf3991a2322f771cc7947f022191f233"
+        },
+        {
+            "date": 1757686576644,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-09-12-09.log",
+            "hash": "0b35e232d7f6de94cdfb7193be0940816e1908f453d63463595f91d53451b7f9"
+        },
+        {
+            "date": 1757697016497,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-09-12-12.log",
+            "hash": "98e28578b06eb9c5d9bf948645d6d6784f9f9e76fd0810a1c5ad52af2b6f35dc"
+        },
+        {
+            "date": 1757710857636,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-09-12-16.log",
+            "hash": "ba62fd61e91ff22c2e564ec84be23638a82c89a2c5a2334316feb620ad213df2"
+        },
+        {
+            "date": 1757720793184,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-09-12-18.log",
+            "hash": "7e254980aacb0f18a0796ecd6ffc903dbd10123ba0a110894e2d13e685fc56a7"
+        },
+        {
+            "date": 1757776191347,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-09-13-10.log",
+            "hash": "7d1a0c1b0067954ffb8dff1236893749505fbbac62eab74a2bf5d1ad39fb8807"
+        },
+        {
+            "date": 1757883781204,
+            "name": "C:\\inetpub\\validator-apis\\src\\syslogs\\sysap-events_2025-09-14-16.log",
+            "hash": "f22d60646eff8bff2fd02d15573d5a9d0581e0740aba2d3f57880ac94a7fb70d"
+        }
+    ],
+    "hashType": "sha256"
+}

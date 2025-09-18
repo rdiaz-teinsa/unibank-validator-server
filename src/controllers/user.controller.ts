@@ -139,6 +139,9 @@ export const logindemo = async (req: Request, res: Response) => {
 
         let user = req.body.username;
         let userPass = req.body.password;
+
+        console.log('User: ' + user + ' Password: ' + userPass);
+
         let userResponse: any = {
             "fullName": "Anonymous",
             "username": user,

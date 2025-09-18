@@ -52,7 +52,7 @@ envData = {
     "uat": {
         NODE_ENV: 'certification',
         NODE_OS: 'Linux',
-        VERSION: '1.02',
+        VERSION: '1.20',
         HTTP_PORT: '7443',
         ALGORITHM: 'aes-256-ctr',
         TOKEN_PASSPHRASE: '4onZYjWeJthAaNcSdCUTsPfg',
@@ -67,8 +67,8 @@ envData = {
             HTTPS: 'https://' + domain + '/'
         },
         SYSPATH: {
-            TXT_ARCHIVE: '/var/teinsa/' + folder + '/data/',
-            LOG_ARCHIVE: '/var/teinsa/' + folder + '/logs/',
+            TXT_ARCHIVE: '/var/teinsa/' + folder + '/archive/data/',
+            LOG_ARCHIVE: '/var/teinsa/' + folder + '/archive/tvalogs/',
             WEB_ARCHIVE: '/var/teinsa/' + folder + '/archive',
             TST_ARCHIVE: '/var/teinsa/' + folder + '/static/index.html'
         },

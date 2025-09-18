@@ -3,7 +3,7 @@ const rotateFile = require('winston-daily-rotate-file');
 const path = require('path');
 
 const fileOpt = {
-    filename: path.join(__dirname, ('../syslogs/' + 'sysap-events_%DATE%.log')),
+    filename: path.join(__dirname, ('../../archive/syslogs/' + 'teinsa-validator-events_%DATE%.log')),
     datePattern: 'YYYY-MM-DD-HH',
     zippedArchive: true,
     maxSize: '5m',

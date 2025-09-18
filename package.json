@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "teinsa-validator-backend-services",
   "version": "1.2.0",
   "description": "Módulo de Backend del Sistema Validador de Átomos.",
@@ -45,6 +45,7 @@
     "csv-file-validator": "^2.1.0",
     "exceljs": "^4.3.0",
     "express": "^4.17.2",
+    "firstline": "^2.0.2",
     "json2csv": "^5.0.6",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",

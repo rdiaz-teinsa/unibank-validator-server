@@ -158,6 +158,15 @@ export const logindemo = async (req: Request, res: Response) => {
                                         "error": false,
                                         "token": "Bearer ",
                                         "access": [],
+                                        "ability": [
+                                            {
+                                                "action": 'manage',
+                                                "subject": 'all',
+                                            },
+                                        ],
+                                        "extras": {
+                                            "eCommerceCartItemsCount": 5
+                                        }
                                     }
                                 };
 
@@ -182,7 +191,16 @@ export const logindemo = async (req: Request, res: Response) => {
                     "idCentro": 121,
                     "createdDate": "2025-09-17T22:07:57.777Z",
                     "error": false,
-                    "access": []
+                    "access": [],
+                    "ability": [
+                        {
+                            "action": 'manage',
+                            "subject": 'all',
+                        },
+                    ],
+                    "extras": {
+                        "eCommerceCartItemsCount": 5
+                    }
                 }
             }
         }
@@ -205,6 +223,15 @@ export const logindemo = async (req: Request, res: Response) => {
                     "createdDate": "2025-09-17T22:07:57.777Z",
                     "error": false,
                     "access": [],
+                    "ability": [
+                        {
+                            "action": 'manage',
+                            "subject": 'all',
+                        },
+                    ],
+                    "extras": {
+                        "eCommerceCartItemsCount": 5
+                    }
                 }
             }
         }
@@ -227,6 +254,15 @@ export const logindemo = async (req: Request, res: Response) => {
                     "createdDate": "2025-09-17T22:07:57.777Z",
                     "error": false,
                     "access": [],
+                    "ability": [
+                        {
+                            "action": 'manage',
+                            "subject": 'all',
+                        },
+                    ],
+                    "extras": {
+                        "eCommerceCartItemsCount": 5
+                    }
                 }
             }
         }
@@ -249,6 +285,15 @@ export const logindemo = async (req: Request, res: Response) => {
                     "createdDate": "2025-09-17T22:07:57.777Z",
                     "error": false,
                     "access": [],
+                    "ability": [
+                        {
+                            "action": 'manage',
+                            "subject": 'all',
+                        },
+                    ],
+                    "extras": {
+                        "eCommerceCartItemsCount": 5
+                    }
                 }
             }
         }

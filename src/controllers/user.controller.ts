@@ -1,4 +1,4 @@
-﻿// import express, { Request, Response } from 'express';
+﻿import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 // import bcrypt from 'bcrypt';
 import {tokenSecret} from '../_helpers/global';
@@ -136,7 +136,7 @@ export const login= async (req: Request, res: Response) => {
 
 export const logindemo = async (req: Request, res: Response) => {
     try {
-        console.log('User: ' + req.body.username + ' Password: ' + req.body.password);
+
         let user = req.body.username;
         let userPass = req.body.password;
         let userResponse: any = {

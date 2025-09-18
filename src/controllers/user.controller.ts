@@ -1,6 +1,6 @@
-﻿import express, { Request, Response } from 'express';
+﻿// import express, { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
+// import bcrypt from 'bcrypt';
 import {tokenSecret} from '../_helpers/global';
 import {autenticarUsuario} from '../database/user.service';
 import {autenticarUsuarioAD} from '../_helpers/authenticate';
@@ -136,7 +136,7 @@ export const login= async (req: Request, res: Response) => {
 
 export const logindemo = async (req: Request, res: Response) => {
     try {
-
+        console.log('User: ' + req.body.username + ' Password: ' + req.body.password);
         let user = req.body.username;
         let userPass = req.body.password;
         let userResponse: any = {
@@ -153,7 +153,7 @@ export const logindemo = async (req: Request, res: Response) => {
             "access": [],
         };
 
-        if (user.toLowerCase() === 'admin' && userPass === '$Tein$a2024.') {
+        if (user.toLowerCase() === 'admin@teinsa-pa.com' && userPass === '$Tein$a2024.') {
 
             userResponse = {
                 "fullName": "John Min",

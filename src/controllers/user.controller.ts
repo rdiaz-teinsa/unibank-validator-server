@@ -1,10 +1,10 @@
 ﻿import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 // import bcrypt from 'bcrypt';
-import {tokenSecret} from '../_helpers/global';
+import {tokenSecret, authConfig} from '../_helpers/global';
 import {autenticarUsuario} from '../database/user.service';
 import {autenticarUsuarioAD} from '../_helpers/authenticate';
-import { authConfig} from '../_helpers/global';
+
 
 
 const getToken = (userId: string, userRole: string): string => {
@@ -178,8 +178,8 @@ export const logindemo = async (req: Request, res: Response) => {
             userResponse = {
                 "error": false,
                 "tokenType": "Bearer",
-                "accessToken": getToken('admin', 'administrator'),
-                "refreshToken": getToken('admin', 'administrator'),
+                "accessToken": getToken('admin', authConfig.validatorGroup),
+                "refreshToken": getToken('admin', authConfig.validatorGroup),
                 "userData": {
                     "userId": "292F55E9-6BA3-4925-B8C0-5F65CD71F5DA",
                     "fullName": "Administrador del Sistema",
@@ -209,8 +209,8 @@ export const logindemo = async (req: Request, res: Response) => {
             userResponse = {
                 "error": false,
                 "tokenType": "Bearer",
-                "accessToken": getToken('manager', 'manager'),
-                "refreshToken": getToken('manager', 'manager'),
+                "accessToken": getToken('melquiades.villarreal', authConfig.validatorGroup),
+                "refreshToken": getToken('melquiades.villarreal', authConfig.validatorGroup),
                 "userData": {
                     "userId": "292F55E9-6BA3-4925-B8C0-5F65CD71F5DA",
                     "fullName": "Melquiades Villarreal",
@@ -240,8 +240,8 @@ export const logindemo = async (req: Request, res: Response) => {
             userResponse = {
                 "error": false,
                 "tokenType": "Bearer",
-                "accessToken": getToken('reader', 'reader'),
-                "refreshToken": getToken('reader', 'reader'),
+                "accessToken": getToken('juan.ortega', authConfig.validatorGroup),
+                "refreshToken": getToken('juan.ortega', authConfig.validatorGroup),
                 "userData": {
                     "userId": "292F55E9-6BA3-4925-B8C0-5F65CD71F5DA",
                     "fullName": "Juan Ortega",
@@ -271,8 +271,8 @@ export const logindemo = async (req: Request, res: Response) => {
             userResponse = {
                 "error": false,
                 "tokenType": "Bearer",
-                "accessToken": getToken('reader', 'reader'),
-                "refreshToken": getToken('reader', 'reader'),
+                "accessToken": getToken('chiara.rodriguez', authConfig.validatorGroup),
+                "refreshToken": getToken('chiara.rodriguez', authConfig.validatorGroup),
                 "userData": {
                     "userId": "292F55E9-6BA3-4925-B8C0-5F65CD71F5DA",
                     "fullName": "Chiara Rodriguez",

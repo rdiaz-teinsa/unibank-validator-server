@@ -74,7 +74,7 @@ envData = {
         },
         DBS: {
             SQL_SYS: {
-                MSSQL_SERVER: '34.199.202.170',
+                MSSQL_SERVER: 'localhost',
                 MSSQL_PORT: '1433',
                 MSSQL_DATABASE: 'TEINSA_CONFIG',
                 MSSQL_USER: 'sa',
@@ -83,7 +83,7 @@ envData = {
                 MSSQL_ENABLE_ARITHABORT: true,
             },
             SQL_DATA: {
-                MSSQL_SERVER: '34.199.202.170',
+                MSSQL_SERVER: 'localhost',
                 MSSQL_PORT: '1433',
                 MSSQL_DATABASE: 'TEINSA_VAL',
                 MSSQL_USER: 'sa',

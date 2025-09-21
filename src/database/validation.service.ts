@@ -251,7 +251,7 @@ export const consultarValidacionesArchivo = async (pData : any) => {
         let settings = await conn.request()
             .input('atomo', sql.VarChar(10), pData.atomo)
             .output('validations', sql.VarChar(10000))
-            .query('EXEC TEINSA_Setting.dbo.Usp_Syntax_Validator @atomo, @validations');
+            .query('EXEC TEINSA_CONFIG.dbo.Usp_Syntax_Validator @atomo, @validations');
 
         if(settings.recordset.length > 0) {
             let validations = settings.recordset[0].headers;

@@ -151,7 +151,7 @@ export const logindemo = async (req: Request, res: Response) => {
                                         "username": user,
                                         "photo": null,
                                         "email": " ",
-                                        "role": "quest",
+                                        "role": "guest",
                                         "authenticated": false,
                                         "idCentro": 121,
                                         "createdDate": "2023-10-29T22:07:57.777Z",

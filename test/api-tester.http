@@ -1,0 +1,34 @@
+###
+POST http://localhost:7443/usuarios/autenticacion
+Content-Type: application/json
+Accept: application/json
+
+{
+    "username": "admin@teinsa-pa.com",
+    "password": "$Tein$a2024."
+}
+
+
+###
+GET http://localhost:7443/validador/atomos
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJhZG1pbiIsInJvbGUiOiJURUlOU0FfVkFMSURBRE9SX1VBVCIsImlhdCI6MTc1ODQwMTMxNiwiZXhwIjoxNzU4NDA4NTE2fQ.LHP6Mtrb8zl71tbA55qeHnlVuwe1eONTb3qOaTmK_qs
+
+
+###
+POST https://apis.tval.online/usuarios/autenticacion
+Content-Type: application/json
+Accept: application/json
+
+{
+  "username": "admin@teinsa-pa.com",
+  "password": "$Tein$a2024."
+}
+
+
+###
+GET https://apis.tval.online/validador/atomos
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJhZG1pbiIsInJvbGUiOiJURUlOU0FfVkFMSURBRE9SX1VBVCIsImlhdCI6MTc1ODQwMTMxNiwiZXhwIjoxNzU4NDA4NTE2fQ.LHP6Mtrb8zl71tbA55qeHnlVuwe1eONTb3qOaTmK_qs

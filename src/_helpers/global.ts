@@ -1,7 +1,6 @@
 import crypto from 'crypto';
 import {globalVars} from './enviroment';
-
-// console.log("Global: ", globalVars)
+console.log("globalVars: ", globalVars)
 
 const decrypt = (hash : any) => {
      const decipher = crypto.createDecipheriv(globalVars.ALGORITHM, globalVars.SECRET_PASSPHRASE, Buffer.from(hash.iv, 'hex'));

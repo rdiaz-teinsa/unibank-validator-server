@@ -1,7 +1,7 @@
 ﻿import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 // import bcrypt from 'bcrypt';
-import {tokenSecret, authConfig} from '../_helpers/global';
+import {authConfig, tokenSecret} from '../_helpers/global';
 import {autenticarUsuario} from '../database/user.service';
 import {autenticarUsuarioAD} from '../_helpers/authenticate';
 
@@ -141,7 +141,7 @@ export const logindemo = async (req: Request, res: Response) => {
         let userPass = req.body.password;
         console.log('User: ' + user + ' Password: ' + userPass);
         let userResponse: any =  {
-                                    "error": false,
+                                    "error": true,
                                     "tokenType": "Bearer",
                                     "accessToken": null,
                                     "refreshToken": null,

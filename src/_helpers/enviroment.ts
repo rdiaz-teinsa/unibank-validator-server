@@ -2,12 +2,15 @@ let env = 'uat';
 let envData: any;
 let domain = 'unibank.tval.online';
 let folder = 'unibank-validator-server';
+if(env==='dev') {
+    domain = 'localhost';
+}
 
 envData = {
     "dev": {
-        NODE_ENV: 'development',
+        NODE_ENV: 'local',
         NODE_OS: 'Linux',
-        VERSION: '1.01',
+        VERSION: '1.20',
         HTTP_PORT: '7443',
         ALGORITHM: 'aes-256-ctr',
         TOKEN_PASSPHRASE: '4onZYjWeJthAaNcSdCUTsPfg',
@@ -22,32 +25,32 @@ envData = {
             HTTPS: 'https://' + domain + '/'
         },
         SYSPATH: {
-            TXT_ARCHIVE: '/Users/jherrera/WebstormProjects/' + folder + '/data/',
+            TXT_ARCHIVE: '/Users/arielherrera/WebstormProjects/' + folder + '/data/',
             LOG_ARCHIVE: '/Users/jherrera/WebstormProjects/' + folder + '/logs/',
             WEB_ARCHIVE: '/Users/jherrera/WebstormProjects/' + folder + '/archive',
             TST_ARCHIVE: '/Users/jherrera/WebstormProjects/' + folder + '/static/index.html'
         },
         DBS: {
             SQL_SYS: {
-                MSSQL_SERVER: '34.199.202.170',
+                MSSQL_SERVER: '134.199.202.170',
                 MSSQL_PORT: '1433',
-                MSSQL_DATABASE: 'TEINSA_VAL',
+                MSSQL_DATABASE: 'TEINSA_CONFIG',
                 MSSQL_USER: 'sa',
-                MSSQL_PASSWORD: '{"iv":"32a0f5ed84715281441047c8bf2a4e98","content":"81e1b2c3c12c22281c"}',
+                MSSQL_PASSWORD: '{"iv":"3b5df530ada5213dddc55cfe700ac6a3","content":"cf623a88376d8a3309ac66bca589305a9ed8d30c051e"}',
                 MSSQL_ENCRYPT: true,
                 MSSQL_ENABLE_ARITHABORT: true,
             },
             SQL_DATA: {
-                MSSQL_SERVER: 'validator.teinsa-pa.com',
+                MSSQL_SERVER: '134.199.202.170',
                 MSSQL_PORT: '1433',
                 MSSQL_DATABASE: 'TEINSA_VAL',
                 MSSQL_USER: 'sa',
-                MSSQL_PASSWORD: '{"iv":"32a0f5ed84715281441047c8bf2a4e98","content":"81e1b2c3c12c22281c"}',
+                MSSQL_PASSWORD: '{"iv":"3b5df530ada5213dddc55cfe700ac6a3","content":"cf623a88376d8a3309ac66bca589305a9ed8d30c051e"}',
                 MSSQL_ENCRYPT: true,
                 MSSQL_ENABLE_ARITHABORT: true,
             }
         },
-        LDAP_GROUP_O0: 'TEINSA_VALIDADOR_TEST'
+        LDAP_GROUP_O0: 'TEINSA_VALIDADOR_UAT'
     },
     "uat": {
         NODE_ENV: 'certification',

@@ -8,8 +8,8 @@ if(env==='dev') {
 
 envData = {
     "dev": {
-        NODE_ENV: 'local',
-        NODE_OS: 'Linux',
+        NODE_ENV: 'dev',
+        NODE_OS: 'LIX',
         VERSION: '1.20',
         HTTP_PORT: '7443',
         ALGORITHM: 'aes-256-ctr',
@@ -54,7 +54,7 @@ envData = {
     },
     "uat": {
         NODE_ENV: 'certification',
-        NODE_OS: 'Linux',
+        NODE_OS: 'LIX',
         VERSION: '1.20',
         HTTP_PORT: '7443',
         ALGORITHM: 'aes-256-ctr',

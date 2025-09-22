@@ -161,7 +161,6 @@ export const masterFileValidation = async (iBank: string, iDate: string, iAtom: 
 
         const noReportValue: string = iDate + '~' + iBank + '~NR';
         let atomFile: string = filePathRoot + '/' + iBank + '/' + iDate + '/' + iFile;
-
         let validPath = await validateFilePath(atomFile);
 
 	if (!validPath) {

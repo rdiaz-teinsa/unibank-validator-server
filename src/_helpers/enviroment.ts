@@ -70,8 +70,8 @@ envData = {
             HTTPS: 'https://' + domain + '/'
         },
         SYSPATH: {
-            TXT_ARCHIVE: '/var/teinsa/' + folder + '/archive/data/',
-            LOG_ARCHIVE: '/var/teinsa/' + folder + '/archive/tvalogs/',
+            TXT_ARCHIVE: '/var/teinsa/' + folder + '/archive/data',
+            LOG_ARCHIVE: '/var/teinsa/' + folder + '/archive/tvalogs',
             WEB_ARCHIVE: '/var/teinsa/' + folder + '/archive',
             TST_ARCHIVE: '/var/teinsa/' + folder + '/static/index.html'
         },

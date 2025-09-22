@@ -49,7 +49,7 @@ export const getCatalogsData = async (req: Request, res: Response) => {
         // @ts-ignore
         let response : any = await obtenerCatalogos();
         // console.log("Response: ", response)
-        console.log("Request Completed!")
+        // console.log("Request Completed!")
         // @ts-ignore
         if (response.error === true) return res.status(400).json(response);
         // @ts-ignore
@@ -77,14 +77,14 @@ export const postGestionarPeriodo = async (req: Request, res: Response) => {
             // @ts-ignore
             ejecutables: req.body.ejecutables,
         }
-        console.log("Input Data: ", iData)
+        console.log("Input Data (Periodo): ", iData)
 
         createFolders(filePathRoot, iData.codBanco, iData.fechaCorte);
 
 
         let response: any;
         response = await gestionarPeriodo(iData);
-        console.log("Response: ", response)
+        // console.log("Response: ", response)
         // @ts-ignore
         if (response.error === true) return res.status(400).json({
             error: true,
@@ -154,7 +154,7 @@ export const postCargarDatosAtomos = async (req: Request, res: Response) => {
         res.status(200).json(response.record);
     } catch (err) {
         // @ts-ignore
-        console.log('ERROR: ', err)
+        console.error('ERROR: ', err)
         return res.status(500).json({error: true, message: err});
     }
 }

@@ -60,7 +60,7 @@ const masterValidation = (pValue: any, pType: string, pMax: number, pMin: number
         if ((intPlaces <= pMax) && (decPlaces <= pMin)) {
             result = true
         }
-        console.log(result);
+        // console.log(result);
         return result;
     }
     else if ((pType === 'NVARCHAR') && (dataType === 'string') && (pValue.length >= pMin) && (pValue.length <= pMax)) {
@@ -70,7 +70,7 @@ const masterValidation = (pValue: any, pType: string, pMax: number, pMin: number
         return true;
     }
     else {
-        console.log("INVALID RECORD: DATA TYPE - ", dataType, " TYPE: ", pType , " VALUE: ", pValue )
+        console.error("INVALID RECORD: DATA TYPE - ", dataType, " TYPE: ", pType , " VALUE: ", pValue )
         return false;
     }
 };
@@ -110,7 +110,7 @@ const writeFileData = (fPath: string, fData: any) => {
         fs.writeFileSync(fPath, fData);
         // console.log("File written successfully");
     } catch(err) {
-        // console.error(err);
+        console.error(err);
         throw err;
     }
 }
@@ -131,7 +131,7 @@ const fileValidation = async (iBank: string, iDate: string, iAtom: string, iFile
     let filePath = filePathRoot + '/' + iBank + '/' + iDate + '/' + iFile;
     let data = getFileData(filePath, tEncode);
     let response = await consultarValidacionesArchivo({atomo: iAtom});
-    console.log('VALIDATION RULES SP: ', response.validations);
+    // console.log('VALIDATION RULES SP: ', response.validations);
     bankCode = iBank;
     processDate = iDate;
     const config: ValidatorConfig = {

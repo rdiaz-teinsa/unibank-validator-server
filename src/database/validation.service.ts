@@ -32,7 +32,7 @@ export const obtenerCatalogos = async () => {
             ],
             "reglas": []
         };
-        console.log("Respuesta: ", response);
+        // console.log("Respuesta: ", response);
 
         return response;
 
@@ -57,7 +57,7 @@ export const gestionarPeriodo = async (pData : any) => {
             .query('EXEC TEINSA_CONFIG.dbo.USP_VAL_GESTIONAR_PERIODO @cod_banco, @fecha_corte, @frecuencia, @tipo_corrida, @usuario, @ejecutables');
         await registrarLog(conn, pData.usuario, pData.codBanco, pData.fechaCorte, 'GESTIONAR PERIODO', pData);
         await conn.close();
-        console.log("PROCESOS: ", result.recordset)
+        // console.log("PROCESOS: ", result.recordset)
         if(result.recordset.length > 0) {
             return {"error": false, "record": result.recordset};
         } else {
@@ -87,7 +87,7 @@ export const cargarDatosAtomos = async (pData : any) => {
 
         await registrarLog(conn, pData.usuario, pData.codBanco, pData.fechaCorte, 'CARGAR DATOS', pData);
         await conn.close();
-        console.log("PERIODOS: ", result.recordset)
+        // console.log("PERIODOS: ", result.recordset)
         if(result.recordset.length > 0) {
             return {"error": false, "record": result.recordset};
         } else {
@@ -117,7 +117,7 @@ export const consultarAtomos = async (pData : any) => {
             .input('cod_banco', sql.NVarChar(4), pData.codBanco)
             .query('EXEC TEINSA_CONFIG.dbo.USP_VAL_CONSULTAR_ATOMOS @cod_banco');
         await conn.close();
-        console.log("PERIODOS: ", result.recordset)
+        // console.log("PERIODOS: ", result.recordset)
         if(result.recordset.length > 0) {
             return {"error": false, "record": result.recordset};
         } else {
@@ -138,7 +138,7 @@ export const consultarPeriodos = async (pData : any) => {
             .input('cod_banco', sql.NVarChar(4), pData.codBanco)
             .query('EXEC TEINSA_CONFIG.dbo.USP_VAL_CONSULTAR_PERIODOS @cod_banco');
         await conn.close();
-        console.log("PERIODOS: ", result.recordset)
+        // console.log("PERIODOS: ", result.recordset)
         if(result.recordset.length > 0) {
             return {"error": false, "record": result.recordset};
         } else {
@@ -159,7 +159,7 @@ export const consultarPeriodo = async (pData : any) => {
             .input('id_periodo', sql.NVarChar(20), pData.idPeriodo)
             .query('EXEC TEINSA_CONFIG.dbo.USP_VAL_CONSULTAR_PERIODO @id_periodo');
         await conn.close();
-        console.log("PERIODOS: ", result.recordset[0])
+        // console.log("PERIODOS: ", result.recordset[0])
         if(result.recordset.length > 0) {
             return {"error": false, "record": result.recordset[0]};
         } else {
@@ -180,7 +180,7 @@ export const consultarProcesos = async (pData : any) => {
             .input('id_periodo', sql.NVarChar(20), pData.idPeriodo)
             .query('EXEC TEINSA_CONFIG.dbo.USP_VAL_CONSULTAR_PROCESOS @id_periodo');
         await conn.close();
-        console.log("PROCESOS: ", result.recordset)
+        // console.log("PROCESOS: ", result.recordset)
         if(result.recordset.length > 0) {
             return {"error": false, "record": result.recordset};
         } else {
@@ -201,7 +201,7 @@ export const consultarProcesosAtomo = async (pData : any) => {
             .input('atomo', sql.NVarChar(20), pData.atomo)
             .query('EXEC TEINSA_CONFIG.dbo.USP_VAL_CONSULTAR_PROCESOS_ATOMO @atomo');
         await conn.close();
-        console.log("PROCESOS: ", result.recordset)
+        // console.log("PROCESOS: ", result.recordset)
         if(result.recordset.length > 0) {
             return {"error": false, "record": result.recordset};
         } else {
@@ -223,7 +223,7 @@ export const consultarProcesosFrecuencia = async (pData : any) => {
             .input('IdPeriodo', sql.NVarChar(20), pData.idPeriodo)
             .query('EXEC TEINSA_CONFIG.dbo.USP_VAL_CONSULTAR_PROCESOS_FRECUENCIA @frecuencia, @IdPeriodo');
         await conn.close();
-        console.log("PROCESOS: ", result.recordset)
+        // console.log("PROCESOS: ", result.recordset)
         if(result.recordset.length > 0) {
             return {"error": false, "record": result.recordset};
         } else {

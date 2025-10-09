@@ -6,7 +6,7 @@ import * as ts from "typescript";
 const fs = require('fs');
 const firstline = require("firstline");
 const maxErrors: number = 10000;
-const tEncode: any = 'utf-8';
+const tEncode: any = 'utf16le';
 let bankCode = '000';
 let processDate = '19000101';
 
@@ -131,7 +131,7 @@ const fileValidation = async (iBank: string, iDate: string, iAtom: string, iFile
     let filePath = filePathRoot + '/' + iBank + '/' + iDate + '/' + iFile;
     let data = getFileData(filePath, tEncode);
     let response = await consultarValidacionesArchivo({atomo: iAtom});
-    // console.log('VALIDATION RULES SP: ', response.validations);
+    console.info('VALIDATION RULES SP: ', response.validations);
     bankCode = iBank;
     processDate = iDate;
     const config: ValidatorConfig = {
@@ -141,7 +141,7 @@ const fileValidation = async (iBank: string, iDate: string, iAtom: string, iFile
             delimiter: "~",
             newline: "",
             header: false,
-	    quoteChar: '^'
+	        quoteChar: '^'
             //fastMode: true
         }
     }

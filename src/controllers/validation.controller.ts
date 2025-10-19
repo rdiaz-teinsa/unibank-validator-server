@@ -1,5 +1,6 @@
 import {Request, Response} from 'express';
 import {createFolders} from '../_helpers/utils';
+import {exportExcelToTxt} from '../_helpers/xls2txt';
 import {filePathRoot, logsPathRoot, localSystem} from '../_helpers/global';
 import {masterFileValidation} from '../_helpers/validate';
 import {
@@ -26,7 +27,6 @@ import {
 import {globalVars} from "../_helpers/enviroment";
 
 
-
 function isEmpty(value: any) {
     if (value == null || (typeof value === "string" && value.trim().length === 0)) {
         return 'system';
@@ -42,7 +42,6 @@ function isEmptyDate(value: any) {
         return value;
     }
 }
-
 
 export const getCatalogsData = async (req: Request, res: Response) => {
     try {
@@ -113,6 +112,16 @@ export const postCargarDatosAtomos = async (req: Request, res: Response) => {
             let code: string = atom[0].ATOMO;
             let filename: string = atom[0].ARCHIVO;
 
+            let xlsPath: string = filePathRoot + '/' + req.body.codBanco + '/' + req.body.fechaCorte + '/' + atom[0].ARCHIVO.replace("txt", "xls");
+            let txtPath: string = filePathRoot + '/' + req.body.codBanco + '/' + req.body.fechaCorte + '/' + atom[0].ARCHIVO.replace("txt", "xls");
+            let conversion: any = exportExcelToTxt(xlsPath, txtPath, "~");
+
+            // @ts-ignore
+            if (conversion.error === true) return res.status(400).json({
+                error: true,
+                message: conversion.message
+            });
+
             let validation: any = await  masterFileValidation(req.body.codBanco, req.body.fechaCorte, code, filename);
             console.log('Validation Result: ', validation);
 
@@ -158,10 +167,6 @@ export const postCargarDatosAtomos = async (req: Request, res: Response) => {
         return res.status(500).json({error: true, message: err});
     }
 }
-
-
-
-
 
 
 export const getConsultarAtomos = async (req: Request, res: Response) => {
@@ -309,18 +314,6 @@ export const getConsultarProcesosFrecuencia = async (req: Request, res: Response
         return res.status(500).json({error: true, message: err});
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 export const postValidacionFuncionalResumen = async (req: Request, res: Response) => {
     try {
@@ -578,10 +571,6 @@ export const postValidacionConsultaTablero = async (req: Request, res: Response)
     }
 }
 
-
-
-
-
 export const getConsultarBitacoraValidacion = async (req: Request, res: Response) => {
     try {
         let iData: any;
@@ -605,7 +594,6 @@ export const getConsultarBitacoraValidacion = async (req: Request, res: Response
         return res.status(500).json({error: true, message: err});
     }
 }
-
 
 export const getFileValidations = async (req: Request, res: Response) => {
     try {

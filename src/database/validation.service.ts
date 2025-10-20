@@ -9,7 +9,7 @@ export const obtenerCatalogos = async () => {
     await conn.connect();
     try {
         let sqlBancos = await conn.request().query(`SELECT id_sib AS id, Cod_banco as value, nombre_banco as label, lic_internacional as internacional, logo, color_primary, font_color FROM TEINSA_CONFIG.dbo.TCOD_BANCO ORDER BY label`);
-        let sqlAtomos = await conn.request().query(`SELECT ID_ATOMO, ATOMO, DESCRIPCION, TABLA, NOMBRE_ARCHIVO AS ARCHIVO, FRECUENCIA FROM TCOD_ATOMOS WHERE ACTIVO = 1 ORDER BY ID_ATOMO`);
+        let sqlAtomos = await conn.request().query(`SELECT ID_ATOMO, ATOMO, DESCRIPCION, TABLA, NOMBRE_ARCHIVO AS ARCHIVO, FRECUENCIA, CONVERTIR FROM TCOD_ATOMOS WHERE ACTIVO = 1 ORDER BY ID_ATOMO`);
         await conn.close();
 
         let response =  {
@@ -100,14 +100,6 @@ export const cargarDatosAtomos = async (pData : any) => {
         // throw err;
     }
 };
-
-
-
-
-
-
-
-
 
 export const consultarAtomos = async (pData : any) => {
     let conn = new sql.ConnectionPool(dbConfig);
@@ -236,13 +228,7 @@ export const consultarProcesosFrecuencia = async (pData : any) => {
     }
 };
 
-
-
-
-
 // TODO: Investigar Continuidad de Servicio
-
-
 export const consultarValidacionesArchivo = async (pData : any) => {
     let conn = new sql.ConnectionPool(dbConfig);
     await conn.connect();
@@ -270,14 +256,7 @@ export const consultarValidacionesArchivo = async (pData : any) => {
     }
 };
 
-
-
-
-
-
-
 // TODO: Servicios Utilizados en Validaciones
-
 export const validacionFuncionalResumen = async (pData : any) => {
     let conn = new sql.ConnectionPool(dbConfig);
     await conn.connect();

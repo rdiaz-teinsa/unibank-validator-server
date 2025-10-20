@@ -111,16 +111,18 @@ export const postCargarDatosAtomos = async (req: Request, res: Response) => {
             let atom: any = atomsCatalog.filter((a: { ID_ATOMO: number; }) => a.ID_ATOMO === atomId);
             let code: string = atom[0].ATOMO;
             let filename: string = atom[0].ARCHIVO;
+            let convert: number = atom[0].CONVERTIR;
 
-            let xlsPath: string = filePathRoot + '/' + req.body.codBanco + '/' + req.body.fechaCorte + '/' + atom[0].ARCHIVO.replace("txt", "xls");
-            let txtPath: string = filePathRoot + '/' + req.body.codBanco + '/' + req.body.fechaCorte + '/' + atom[0].ARCHIVO.replace("txt", "xls");
-            let conversion: any = exportExcelToTxt(xlsPath, txtPath, "~");
-
-            // @ts-ignore
-            if (conversion.error === true) return res.status(400).json({
-                error: true,
-                message: conversion.message
-            });
+            if(convert === 1) {
+                let xlsPath: string = filePathRoot + '/' + req.body.codBanco + '/' + req.body.fechaCorte + '/' + atom[0].ARCHIVO.replace("txt", "xls");
+                let txtPath: string = filePathRoot + '/' + req.body.codBanco + '/' + req.body.fechaCorte + '/' + atom[0].ARCHIVO.replace("txt", "xls");
+                let conversion: any = exportExcelToTxt(xlsPath, txtPath, "~");
+                // @ts-ignore
+                if (conversion.error === true) return res.status(400).json({
+                    error: true,
+                    message: conversion.message
+                });
+            }
 
             let validation: any = await  masterFileValidation(req.body.codBanco, req.body.fechaCorte, code, filename);
             console.log('Validation Result: ', validation);

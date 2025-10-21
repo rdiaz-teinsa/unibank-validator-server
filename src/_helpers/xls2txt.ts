@@ -52,7 +52,7 @@ export const exportExcelToTxt = (inputPath: string, outputPath: string, delimite
         const rows = data.slice(1);
 
         const lines: string[] = [];
-        lines.push(headers.join(delimiter)); // Encabezados
+        lines.push(headers.join(delimiter));
         for (const row of rows) {
             const line = row.map(cell => String(cell ?? "")).join(delimiter);
             lines.push(line);
@@ -60,8 +60,10 @@ export const exportExcelToTxt = (inputPath: string, outputPath: string, delimite
 
         const txtContent = lines.join("\n");
 
-        const buffer = iconv.encode(txtContent, "utf16-le");
+        const bom = Buffer.from([0xFF, 0xFE]); // BOM for UTF-16LE
+        const buffer = Buffer.concat([bom, iconv.encode(txtContent, "utf16-le")]);
 
+        // const buffer = iconv.encode(txtContent, "utf16-le");
         fs.writeFileSync(outputPath, buffer);
 
         console.log(`Archivo exportado correctamente a: ${outputPath}`);

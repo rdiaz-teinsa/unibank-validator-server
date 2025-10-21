@@ -114,7 +114,7 @@ export const postCargarDatosAtomos = async (req: Request, res: Response) => {
             let convert: number = atom[0].CONVERTIR;
 
             if(convert) {
-                let xlsPath: string = filePathRoot + '/' + req.body.codBanco + '/' + req.body.fechaCorte + '/' + atom[0].ARCHIVO.replace("txt", "xls");
+                let xlsPath: string = filePathRoot + '/' + req.body.codBanco + '/' + req.body.fechaCorte + '/' + atom[0].ARCHIVO.replace("csv", "xls");
                 let txtPath: string = filePathRoot + '/' + req.body.codBanco + '/' + req.body.fechaCorte + '/' + atom[0].ARCHIVO;
                 let conversion: any = exportExcelToTxt(xlsPath, txtPath, "~");
                 console.info('CONVERSION: ', conversion)

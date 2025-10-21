@@ -75,6 +75,6 @@ const exportExcelToTxt = (inputPath: string, outputPath: string, delimiter: stri
     }
 }
 
-let result = exportExcelToTxt("/var/unibank-validator-server/archive/data/236/20250101/AT04.xls", "/var/unibank-validator-server/archive/data/236/20250101/AT04.txt", "~");
+let result = exportExcelToTxt("/var/teinsa/unibank-validator-server/archive/data/236/20250101/AT04.xls", "/var/teinsa/unibank-validator-server/archive/data/236/20250101/AT04.txt", "~");
 
 console.log(result);

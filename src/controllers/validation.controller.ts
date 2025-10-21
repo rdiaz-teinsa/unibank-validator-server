@@ -112,6 +112,7 @@ export const postCargarDatosAtomos = async (req: Request, res: Response) => {
             let code: string = atom[0].ATOMO;
             let filename: string = atom[0].ARCHIVO;
             let convert: number = atom[0].CONVERTIR;
+            console.info('CONVERTIR: ', convert)
 
             if(convert) {
                 let xlsPath: string = filePathRoot + '/' + req.body.codBanco + '/' + req.body.fechaCorte + '/' + atom[0].ARCHIVO.replace("txt", "xls");

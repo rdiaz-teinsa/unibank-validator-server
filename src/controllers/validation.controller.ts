@@ -112,12 +112,12 @@ export const postCargarDatosAtomos = async (req: Request, res: Response) => {
             let code: string = atom[0].ATOMO;
             let filename: string = atom[0].ARCHIVO;
             let convert: number = atom[0].CONVERTIR;
-            console.info('CONVERTIR: ', convert)
 
             if(convert) {
                 let xlsPath: string = filePathRoot + '/' + req.body.codBanco + '/' + req.body.fechaCorte + '/' + atom[0].ARCHIVO.replace("txt", "xls");
-                let txtPath: string = filePathRoot + '/' + req.body.codBanco + '/' + req.body.fechaCorte + '/' + atom[0].ARCHIVO.replace("txt", "xls");
+                let txtPath: string = filePathRoot + '/' + req.body.codBanco + '/' + req.body.fechaCorte + '/' + atom[0].ARCHIVO;
                 let conversion: any = exportExcelToTxt(xlsPath, txtPath, "~");
+                console.info('CONVERSION: ', conversion)
                 // @ts-ignore
                 if (conversion.error === true) return res.status(400).json({
                     error: true,

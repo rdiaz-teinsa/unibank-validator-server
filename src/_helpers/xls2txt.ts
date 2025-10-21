@@ -60,7 +60,7 @@ export const exportExcelToTxt = (inputPath: string, outputPath: string, delimite
 
         const txtContent = lines.join("\n");
 
-        const bom = Buffer.from([0xFF, 0xFE]); // BOM for UTF-16LE
+        const bom = Buffer.from([0xFF, 0xFE]);
         const buffer = Buffer.concat([bom, iconv.encode(txtContent, "utf16-le")]);
 
         // const buffer = iconv.encode(txtContent, "utf16-le");

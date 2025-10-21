@@ -58,7 +58,7 @@ export const exportExcelToTxt = (inputPath: string, outputPath: string, delimite
             lines.push(line);
         }
 
-        const txtContent = lines.join("\r\n");
+        const txtContent = lines.join("\n");
 
         const buffer = iconv.encode(txtContent, "utf16-le");
 

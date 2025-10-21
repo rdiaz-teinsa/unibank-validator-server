@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "nodemon",
     "test": "ts-node --files src/index.ts",
+    "convert": "ts-node --files src/_helpers/converter.ts",
     "build": "npx tsc",
     "start": "node --max-old-space-size=5120 ./dist/index.js",
     "service": "node ./dist/service.js"

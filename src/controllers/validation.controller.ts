@@ -1,6 +1,7 @@
 import {Request, Response} from 'express';
 import {createFolders} from '../_helpers/utils';
 import {exportExcelToTxt} from '../_helpers/xls2txt';
+import {convertUtf8ToUtf16LESync} from '../_helpers/utf82utf16le';
 import {filePathRoot, logsPathRoot, localSystem} from '../_helpers/global';
 import {masterFileValidation} from '../_helpers/validate';
 import {
@@ -112,16 +113,23 @@ export const postCargarDatosAtomos = async (req: Request, res: Response) => {
             let code: string = atom[0].ATOMO;
             let filename: string = atom[0].ARCHIVO;
             let convert: number = atom[0].CONVERTIR;
+            let xlsPath: string = filePathRoot + '/' + req.body.codBanco + '/' + req.body.fechaCorte + '/' + atom[0].ARCHIVO.replace("csv", "xls");
+            let txtPath: string = filePathRoot + '/' + req.body.codBanco + '/' + req.body.fechaCorte + '/' + atom[0].ARCHIVO;
 
             if(convert) {
-                let xlsPath: string = filePathRoot + '/' + req.body.codBanco + '/' + req.body.fechaCorte + '/' + atom[0].ARCHIVO.replace("csv", "xls");
-                let txtPath: string = filePathRoot + '/' + req.body.codBanco + '/' + req.body.fechaCorte + '/' + atom[0].ARCHIVO;
                 let conversion: any = exportExcelToTxt(xlsPath, txtPath, "~");
                 console.info('CONVERSION: ', conversion)
                 // @ts-ignore
                 if (conversion.error === true) return res.status(400).json({
                     error: true,
                     message: conversion.message
+                });
+            } else {
+                let encoded: any = convertUtf8ToUtf16LESync(txtPath, txtPath);
+                // @ts-ignore
+                if (encoded.error === true) return res.status(400).json({
+                    error: true,
+                    message: encoded.message
                 });
             }
 

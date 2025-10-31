@@ -32,15 +32,16 @@
     "@types/jsonwebtoken": "^8.5.0",
     "@types/morgan": "^1.9.1",
     "@types/mssql": "^6.0.5",
+    "@types/node": "latest",
     "@types/node-fetch": "^2.5.7",
     "nodemon": "^2.0.19",
     "ts-node": "^8.10.2",
-    "@types/node": "latest",
     "typescript": "latest"
   },
   "dependencies": {
     "activedirectory2": "^2.1.0",
     "bcrypt": "^5.0.0",
+    "chardet": "^2.1.1",
     "convert-excel-to-json": "^1.7.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",

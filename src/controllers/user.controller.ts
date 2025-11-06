@@ -234,7 +234,7 @@ export const logindemo = async (req: Request, res: Response) => {
 
         let token: any = null;
 
-        if(signedUser.authenticated){
+        if(signedUser.validated){
             token = getToken(signedUser.user, authConfig.validatorGroup);
         }
 

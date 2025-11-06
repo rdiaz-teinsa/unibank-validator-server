@@ -14,7 +14,7 @@ const getTokenAD = (userId: string, userRole: string): string => {
 }
 
 const users = [
-    {name: "Jose Herrera", user: "jose.herrera@unibank.com.pa", password: "Tein$a2025"},
+    {name: "Jose Ariel Herrera", user: "jose.herrera@unibank.com.pa", password: "Tein$a2025"},
     {name: "Chiara Rodriguez", user: "chiara.rodriguez@unibank.com.pa", password: "9>0xj:%M"},
     {name: "Fernando Delgado", user: "fernando.delgado@unibank.com.pa", password: "W#r3u91v"},
     {name: "Frank Sánchez", user: "frank.sanchez@unibank.com.pa", password: "Xs!06g!S"},

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authorizeAccess } from "../_helpers/authMiddleware.js";
+import { authorizeAccess } from "../_helpers/authMiddleware";
 // import { authorizeAccess } from '../_helpers/authorize';
 import {getReportData} from '../controllers/report.controller';
 

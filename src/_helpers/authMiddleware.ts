@@ -15,6 +15,7 @@ function getKey(header: any, callback: any) {
 
 export function authorizeAccess(req: any, res: any, next: any) {
     const token = req.headers.authorization?.split(" ")[1];
+    console.log("TOKEN: ", token);
     if (!token) return res.status(401).send("Token requerido");
 
     jwt.verify(

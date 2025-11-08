@@ -1,6 +1,6 @@
 import {Router} from 'express';
-import { authorizeAccess } from "../_helpers/authMiddleware";
-// import {authorizeAccess} from '../_helpers/authorize';
+// import { authorizeAccess } from "../_helpers/authMiddleware";
+import {authorizeAccess} from '../_helpers/authorize';
 import {
     getConsultarPeriodos,
     getConsultarPeriodo,

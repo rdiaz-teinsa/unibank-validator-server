@@ -19,11 +19,11 @@ app.use(cors(options))
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use('apis/usuarios/', userRoutes);
-app.use('apis/reportes/', reportRoutes);
-app.use('apis/validador/', validationRoutes);
-app.use('apis/archive', express.static(globalVars.SYSPATH.WEB_ARCHIVE));
-app.use('apis/test', express.static(globalVars.SYSPATH.TST_ARCHIVE))
+app.use('/apis/usuarios/', userRoutes);
+app.use('/apis/reportes/', reportRoutes);
+app.use('/apis/validador/', validationRoutes);
+app.use('/apis/archive', express.static(globalVars.SYSPATH.WEB_ARCHIVE));
+app.use('/apis/test', express.static(globalVars.SYSPATH.TST_ARCHIVE))
 
 async function initializeService() {
     const server = app.listen(app.get('port'));

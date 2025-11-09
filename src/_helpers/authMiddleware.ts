@@ -1,8 +1,10 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt, { JwtHeader } from 'jsonwebtoken'
 import jwksClient from 'jwks-rsa'
+import {azureConfig} from "../_helpers/global";
 
-const tenantId = 'cf2a7612-3a84-4aac-a4cf-b029e6178dbe'
+const tenantId = azureConfig.tenantId;
+const clientId= azureConfig.clientId;
 
 const expectedIssuers = [
     `https://login.microsoftonline.com/${tenantId}/v2.0`,
@@ -47,7 +49,7 @@ export function azureAuthMiddleware(req: Request, res: Response, next: NextFunct
         token,
         getKey,
         {
-            audience: 'api://8c72f1e3-25f2-4335-bf89-16afbbf24f9e',
+            audience: 'api://'+clientId,
             issuer: expectedIssuers,
             algorithms: ['RS256'],
         },

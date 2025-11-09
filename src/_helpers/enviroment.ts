@@ -20,6 +20,9 @@ envData = {
         LDAP_BASE_DN: 'DC=teinsa-pa,DC=com',
         LDAP_USERNAME: 'admin@teinsa-pa.com',
         LDAP_PASSWORD: '{"iv":"b22dc34c32a3a80d73ae978c0532f982","content":"a47edc0172dea80dc1"}',
+        AZURE_TENANT_ID: 'cf2a7612-3a84-4aac-a4cf-b029e6178dbe',
+        AZURE_CLIENTE_ID: '8c72f1e3-25f2-4335-bf89-16afbbf24f9e',
+        AUTHORIZATION_MODEL: 'AZURE',
         WHITELIST: {
             HTTP: 'http://' + domain + '/',
             HTTPS: 'https://' + domain + '/'
@@ -65,6 +68,9 @@ envData = {
         LDAP_BASE_DN: 'DC=teinsa-pa,DC=com',
         LDAP_USERNAME: 'admin@teinsa-pa.com',
         LDAP_PASSWORD: '{"iv":"b22dc34c32a3a80d73ae978c0532f982","content":"a47edc0172dea80dc1"}',
+        AZURE_TENANT_ID: 'cf2a7612-3a84-4aac-a4cf-b029e6178dbe',
+        AZURE_CLIENTE_ID: '8c72f1e3-25f2-4335-bf89-16afbbf24f9e',
+        AUTHORIZATION_MODEL: 'LDAP',
         WHITELIST: {
             HTTP: 'http://' + domain + '/',
             HTTPS: 'https://' + domain + '/'
@@ -110,6 +116,9 @@ envData = {
         LDAP_BASE_DN: 'DC=teinsa-pa,DC=com',
         LDAP_USERNAME: 'admin@teinsa-pa.com',
         LDAP_PASSWORD: '{"iv":"b22dc34c32a3a80d73ae978c0532f982","content":"a47edc0172dea80dc1"}',
+        AZURE_TENANT_ID: 'cf2a7612-3a84-4aac-a4cf-b029e6178dbe',
+        AZURE_CLIENTE_ID: '8c72f1e3-25f2-4335-bf89-16afbbf24f9e',
+        AUTHORIZATION_MODEL: 'LDAP',
         WHITELIST: {
             HTTP: 'http://' + domain + '/',
             HTTPS: 'https://' + domain + '/'
@@ -155,6 +164,9 @@ envData = {
         LDAP_BASE_DN: 'DC=metrobank,DC=local',
         LDAP_USERNAME: 'mtbadteinsa@metrobank.local',
         LDAP_PASSWORD: '{"iv":"7e849ddb2db9d2fc05232a3db5659697","content":"b365c51be70b8a306ddf77370fe56aa7db249dc6"}',
+        AZURE_TENANT_ID: 'cf2a7612-3a84-4aac-a4cf-b029e6178dbe',
+        AZURE_CLIENTE_ID: '8c72f1e3-25f2-4335-bf89-16afbbf24f9e',
+        AUTHORIZATION_MODEL: 'LDAP',
         WHITELIST: {
             HTTP: 'http://' + domain + '/',
             HTTPS: 'https://' + domain + '/'

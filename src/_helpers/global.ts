@@ -43,10 +43,17 @@ export const ldapConfig = {
     "password": decrypt(JSON.parse(globalVars.LDAP_PASSWORD))
 };
 
+export const azureConfig = {
+    "tenantId": globalVars.AZURE_TENANT_ID,
+    "clientId": globalVars.AZURE_CLIENTE_ID
+};
+
 
 export const authConfig = {
     "validatorGroup": globalVars.LDAP_GROUP_O0,
 };
+
+export const authModel = globalVars.AUTHORIZATION_MODEL;
 
 export const tokenSecret = globalVars.TOKEN_PASSPHRASE;
 

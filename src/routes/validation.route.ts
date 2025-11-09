@@ -1,6 +1,7 @@
 import {Router} from 'express';
-// import { authorizeAccess } from "../_helpers/authMiddleware";
-import {authorizeAccess} from '../_helpers/authorize';
+import {authModel} from '../_helpers/global';
+import {ldapAuthMiddleware} from '../_helpers/authorize';
+import {azureAuthMiddleware} from "../_helpers/authMiddleware";
 import {
     getConsultarPeriodos,
     getConsultarPeriodo,
@@ -23,6 +24,19 @@ import {
     getFileValidations
 } from '../controllers/validation.controller';
 
+function getAuthorizeMiddleware(authModel: string) {
+    switch (authModel) {
+        case 'AZURE':
+            return azureAuthMiddleware;
+        case 'LDAP':
+            return ldapAuthMiddleware;
+        default:
+            throw new Error(`Auth model desconocido: ${authModel}`);
+    }
+}
+
+const authorizeAccess = getAuthorizeMiddleware(authModel);
+
 const router = Router();
 router.get('/periodos/banco/:codBanco', authorizeAccess, getConsultarPeriodos);
 router.get('/periodo/:idPeriodo', authorizeAccess, getConsultarPeriodo);
@@ -31,9 +45,6 @@ router.get('/procesos/atomo/:atomo', authorizeAccess, getConsultarProcesosAtomo)
 router.get('/procesos/frecuencia/:frecuencia/periodo/:periodo', authorizeAccess, getConsultarProcesosFrecuencia);
 router.post('/periodo', authorizeAccess, postGestionarPeriodo);
 router.post('/periodo/importar', authorizeAccess, postCargarDatosAtomos);
-
-
-
 router.post('/funcional/resumen', authorizeAccess, postValidacionFuncionalResumen);
 router.post('/funcional/detalle', authorizeAccess, postValidacionFuncionalDetalle);
 router.post('/estructural/resumen', authorizeAccess, postValidacionEstructuralResumen);
@@ -45,8 +56,6 @@ router.post('/tablero', authorizeAccess, postValidacionConsultaTablero);
 router.get('/bitacora/banco/:codBanco', authorizeAccess, getConsultarBitacoraValidacion);
 router.get('/atomos', authorizeAccess, getConsultarAtomos);
 router.get('/catalogos', getCatalogsData);
-
-
 router.get('/archivo/atomo/:atomo', authorizeAccess, getFileValidations);
 
 export default router;

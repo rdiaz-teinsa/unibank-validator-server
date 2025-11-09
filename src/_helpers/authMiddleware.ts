@@ -1,8 +1,9 @@
 import jwt from "jsonwebtoken";
 import jwksClient from "jwks-rsa";
+import {azureConfig} from './global';
 
 const client = jwksClient({
-    jwksUri: "https://login.microsoftonline.com/cf2a7612-3a84-4aac-a4cf-b029e6178dbe/discovery/v2.0/keys",
+    jwksUri: "https://login.microsoftonline.com/"+azureConfig.tenantId+"/discovery/v2.0/keys",
 });
 
 function getKey(header: any, callback: any) {
@@ -13,21 +14,21 @@ function getKey(header: any, callback: any) {
     });
 }
 
-export function authorizeAccess(req: any, res: any, next: any) {
+export function azureAuthMiddleware(req: any, res: any, next: any) {
     const token = req.headers.authorization?.split(" ")[1];
     console.log("TOKEN: ", token);
-    if (!token) return res.status(401).send("Token requerido");
+    if (!token) return res.status(401).send({error: true, message: "El Token requerido para completar la autorizacón."});
 
     jwt.verify(
         token,
         getKey,
         {
-            audience: "api://8c72f1e3-25f2-4335-bf89-16afbbf24f9e",
-            issuer: `https://login.microsoftonline.com/cf2a7612-3a84-4aac-a4cf-b029e6178dbe/v2.0`,
+            audience: "api://"+azureConfig.clientId,
+            issuer: "https://login.microsoftonline.com/"+azureConfig.tenantId+"/v2.0",
             algorithms: ["RS256"],
         },
         (err, decoded) => {
-            if (err) return res.status(403).send("Token inválido");
+            if (err) return res.status(403).send({error: true, message: "El Token proporcionado es invalido."});
             req.user = decoded;
             next();
         }

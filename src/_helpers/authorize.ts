@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import {tokenSecret} from '../_helpers/global';
-// import {globalVars} from './enviroment';
+import {tokenSecret} from './global';
 
 interface IAuthorized {
     uid: string;
@@ -10,7 +9,7 @@ interface IAuthorized {
     exp: number;
 }
 
-export const authorizeAccess = (req: Request, res: Response, next: NextFunction) => {
+export const ldapAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
     try {
         // @ts-ignore
         const bearerToken = req.header('Authorization') || null;

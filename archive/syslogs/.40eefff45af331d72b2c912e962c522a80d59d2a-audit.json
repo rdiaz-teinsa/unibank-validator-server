@@ -1,0 +1,25 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "/Users/arielherrera/WebstormProjects/unibank-validator-server/archive/syslogs/.40eefff45af331d72b2c912e962c522a80d59d2a-audit.json",
+    "files": [
+        {
+            "date": 1758399127311,
+            "name": "/Users/arielherrera/WebstormProjects/unibank-validator-server/archive/syslogs/teinsa-validator-events_2025-09-20-15.log",
+            "hash": "e2fd033c24c434bc7db5874ded3405711d1d3aeec9e3cd585316c85487253e9d"
+        },
+        {
+            "date": 1758480888102,
+            "name": "/Users/arielherrera/WebstormProjects/unibank-validator-server/archive/syslogs/teinsa-validator-events_2025-09-21-13.log",
+            "hash": "5f770a1f19eca7fb2f5bcb4bc235ba70049e2f194d9bda0fe4a5a27db5988098"
+        },
+        {
+            "date": 1758481730758,
+            "name": "/Users/arielherrera/WebstormProjects/unibank-validator-server/archive/syslogs/teinsa-validator-events_2025-09-21-14.log",
+            "hash": "4f7c890960eb0bca658639fe57a51f845be6134b3878d1d46122a03acdb71f93"
+        }
+    ],
+    "hashType": "sha256"
+}

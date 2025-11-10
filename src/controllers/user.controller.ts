@@ -1,7 +1,6 @@
 ﻿import {Request, Response} from 'express';
 import jwt from 'jsonwebtoken';
-// import bcrypt from 'bcrypt';
-import {authConfig, tokenSecret} from '../_helpers/global';
+import {tokenSecret} from '../_helpers/global';
 import {autenticarUsuario} from '../database/user.service';
 import {autenticarUsuarioAD} from '../_helpers/authenticate';
 
@@ -11,62 +10,6 @@ const getToken = (userId: string, userRole: string): string => {
 
 const getTokenAD = (userId: string, userRole: string): string => {
     return jwt.sign({uid: userId, role: userRole}, tokenSecret, {expiresIn: '2h'});
-}
-
-const users = [
-    {name: "Jose Ariel Herrera", user: "jose.herrera@unibank.com.pa", password: "Tein$a2025"},
-    {name: "Chiara Rodriguez", user: "chiara.rodriguez@unibank.com.pa", password: "9>0xj:%M"},
-    {name: "Fernando Delgado", user: "fernando.delgado@unibank.com.pa", password: "W#r3u91v"},
-    {name: "Frank Sánchez", user: "frank.sanchez@unibank.com.pa", password: "Xs!06g!S"},
-    {name: "Melquiades Villarreal", user: "melquiades.villarreal@unibank.com.pa", password: "km4,AD$^"},
-    {name: "Gisel Valdes", user: "gisel.valdes@unibank.com.pa", password: "_PI4z[VS"},
-    {name: "Lucy Concepción", user: "lucy.concepcion@unibank.com.pa", password: "bVqIV9{v"},
-    {name: "Juan Ortega", user: "juan.ortega@unibank.com.pa", password: "Z>80z%=T"},
-    {name: "Alfonso Lau", user: "alfonso.lau@unibank.com.pa", password: "_0cqWS%?"},
-    {name: "Angela Adames", user: "angela.adames@unibank.com.pa", password: "5vwCjdm("},
-    {name: "Alberto De Grasse", user: "alberto.degrasse@unibank.com.pa", password: ",hvomX68"},
-    {name: "Diana Ríos", user: "diana.rios@unibank.com.pa", password: "N|Lx?9%y"},
-    {name: "Moises Plicet", user: "moises.plicet@unibank.com.pa", password: "s.yT35iD"},
-    {name: "Vanesa Sánchez", user: "vanesa.sanchez@unibank.com.pa", password: ";UAcT9nA"},
-    {name: "Carla Dutary", user: "carla.dutary@unibank.com.pa", password: "NJsmw=4&"},
-    {name: "Gabriela Barrios", user: "gabriela.barrios@unibank.com.pa", password: "me;FY!8O"},
-    {name: "Raul Hidalgo", user: "raul.hidalgo@unibank.com.pa", password: "Tein$a2025"},
-    {name: "Alvin Vega", user: "alvin.vega@unibank.com.pa", password: "9>0xj:%M"},
-    {name: "Johana Jaen", user: "johana.jaen@unibank.com.pa", password: "W#r3u91v"},
-    {name: "Edgardo Carrera", user: "edgardo.carrera@unibank.com.pa", password: "Xs!06g!S"},
-    {name: "Georgina Freeman", user: "georgina.freeman@unibank.com.pa", password: "km4,AD$^"},
-    {name: "Domingo Assady", user: "domingo.assady@unibank.com.pa", password: "_PI4z[VS"},
-    {name: "Vidiel Torres", user: "vidiel.torres@unibank.com.pa", password: "bVqIV9{v"},
-    {name: "Luis Almestica", user: "luis.almestica@unibank.com.pa", password: "Z>80z%=T"},
-    {name: "Karina Dominguez", user: "karina.dominguez@unibank.com.pa", password: "s.yT35iD"}
-];
-
-function validarUsuario(user: string, password: string) {
-    if (!user || !password) {
-        return {name: "Anonymous", user: "Anonymous", role: "Guest", validated: false};
-        console.error("validarUsuario: Datos Incompletos")
-    } else {
-        let signed: any = {name: "Anonymous", user: "Anonymous", role: "Guest", validated: false};
-        signed = users.find(u =>
-            u.user.toLowerCase() === user.toLowerCase() && u.password === password
-        );
-
-        if (signed) {
-            console.info("validarUsuario: Usuario Validado")
-            return {
-                name: signed.name,
-                user: signed.user.replace("@unibank.com.pa", ""),
-                role: authConfig.validatorGroup,
-                validated: true
-            };
-        } else {
-            console.error("validarUsuario: Credenciales Invalidas")
-            return {name: "Anonymous", user: user, role: "Guest", validated: false};
-        }
-
-    }
-
-
 }
 
 export const signing = async (req: Request, res: Response) => {
@@ -200,6 +143,45 @@ export const login = async (req: Request, res: Response) => {
     }
 }
 
+
+/*
+
+import {authConfig, tokenSecret} from '../_helpers/global';
+
+const users = [
+    {name: "Jose Ariel Herrera", user: "jose.herrera@unibank.com.pa", password: "Tein$a2025"},
+    {name: "Raul Hidalgo", user: "raul.hidalgo@unibank.com.pa", password: "Tein$a2025"},
+];
+
+
+function validarUsuario(user: string, password: string) {
+    if (!user || !password) {
+        return {name: "Anonymous", user: "Anonymous", role: "Guest", validated: false};
+        console.error("validarUsuario: Datos Incompletos")
+    } else {
+        let signed: any = {name: "Anonymous", user: "Anonymous", role: "Guest", validated: false};
+        signed = users.find(u =>
+            u.user.toLowerCase() === user.toLowerCase() && u.password === password
+        );
+
+        if (signed) {
+            console.info("validarUsuario: Usuario Validado")
+            return {
+                name: signed.name,
+                user: signed.user.replace("@unibank.com.pa", ""),
+                role: authConfig.validatorGroup,
+                validated: true
+            };
+        } else {
+            console.error("validarUsuario: Credenciales Invalidas")
+            return {name: "Anonymous", user: user, role: "Guest", validated: false};
+        }
+
+    }
+
+
+}
+
 export const logindemo = async (req: Request, res: Response) => {
     try {
         let user = req.body.username;
@@ -275,5 +257,5 @@ export const logindemo = async (req: Request, res: Response) => {
         throw e;
     }
 
-}
+}*/
 

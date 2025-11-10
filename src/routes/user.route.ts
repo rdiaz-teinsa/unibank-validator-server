@@ -1,9 +1,8 @@
 import { Router } from 'express';
-import { login, signing, logindemo } from '../controllers/user.controller';
+import { bbddAuthentication, ldapAuthentication} from '../controllers/user.controller';
 
 const router = Router();
-router.post('/autenticacion', logindemo);
-router.post('/autenticar', signing);
-router.post('/ldap', login);
+router.post('/autenticar/bbdd', bbddAuthentication);
+router.post('/autenticar/ldap', ldapAuthentication);
 
 export default router;

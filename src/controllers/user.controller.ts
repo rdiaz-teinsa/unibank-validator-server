@@ -12,7 +12,7 @@ const getTokenAD = (userId: string, userRole: string): string => {
     return jwt.sign({uid: userId, role: userRole}, tokenSecret, {expiresIn: '2h'});
 }
 
-export const signing = async (req: Request, res: Response) => {
+export const bbddAuthentication = async (req: Request, res: Response) => {
     try {
         let iData: any;
 
@@ -82,7 +82,7 @@ export const signing = async (req: Request, res: Response) => {
     }
 }
 
-export const login = async (req: Request, res: Response) => {
+export const ldapAuthentication = async (req: Request, res: Response) => {
     try {
         let iData: any;
         iData = {

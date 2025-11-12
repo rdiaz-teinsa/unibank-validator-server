@@ -1,517 +1,629 @@
-import { Request, Response } from "express";
-import { createFolders } from "../helpers/utils";
-import { exportExcelToTxt, convertUtf8ToUtf16LE } from "../helpers/converter";
-import { filePathRoot, localSystem } from "../helpers/global";
-import { masterFileValidation } from "../helpers/validate";
-import * as validationService from "../database/validation.service";
+import {Request, Response} from 'express';
+import {createFolders} from '../_helpers/utils';
+import {exportExcelToTxt} from '../_helpers/xls2txt';
+import {convertUtf8ToUtf16LESync} from '../_helpers/utf82utf16le';
+import {filePathRoot, logsPathRoot, localSystem} from '../_helpers/global';
+import {masterFileValidation} from '../_helpers/validate';
+import {
+    obtenerCatalogos,
+    gestionarPeriodo,
+    cargarDatosAtomos,
+    consultarPeriodos,
+    consultarPeriodo,
+    consultarProcesos,
+    consultarProcesosAtomo,
+    consultarProcesosFrecuencia,
+    validacionFuncionalResumen,
+    validacionEstructuralResumen,
+    validacionFuncionalDetalle,
+    validacionEstructuralDetalle,
+    validacionDetalleErrorEstructural,
+    validacionDetalleErrorFuncional,
+    validacionConsultaIndicadores,
+    validacionConsultaTablero,
+    validacionConsultaBitacora,
+    consultarAtomos,
+    consultarValidacionesArchivo
+} from '../database/validation.service';
+import {globalVars} from "../_helpers/enviroment";
 
-const isEmpty = (value: any, defaultValue: string) => {
-  if (
-    value == null ||
-    (typeof value === "string" && value.trim().length === 0)
-  ) {
-    return defaultValue;
-  }
-  return value;
-};
 
-const processAtomFile = async (
-  codBanco: string,
-  fechaCorte: string,
-  atom: any,
-  idPeriodo: number,
-  usuario: string,
-) => {
-  const {
-    ARCHIVO: filename,
-    CONVERTIR: convert,
-    ATOMO: code,
-    ID_ATOMO: atomId,
-  } = atom;
-  const xlsPath = `${filePathRoot}/${codBanco}/${fechaCorte}/${filename.replace("csv", "xls")}`;
-  const txtPath = `${filePathRoot}/${codBanco}/${fechaCorte}/${filename}`;
-
-  if (convert) {
-    const conversion = await exportExcelToTxt(xlsPath, txtPath, "~");
-    if (conversion.error) {
-      throw new Error(conversion.message);
+function isEmpty(value: any) {
+    if (value == null || (typeof value === "string" && value.trim().length === 0)) {
+        return 'system';
+    } else {
+        return value;
     }
-  } else {
-    const encoded = await convertUtf8ToUtf16LE(txtPath);
-    if (encoded.error) {
-      throw new Error(encoded.message);
+}
+
+function isEmptyDate(value: any) {
+    if (value == null || (typeof value === "string" && value.trim().length === 0)) {
+        return '2023-11-24';
+    } else {
+        return value;
     }
-  }
-
-  const validation = await masterFileValidation(
-    codBanco,
-    fechaCorte,
-    code,
-    filename,
-  );
-  const logFile = validation.logs || " ";
-
-  const iData = {
-    codBanco,
-    fechaCorte,
-    idPeriodo,
-    usuario,
-    os: localSystem,
-    ejecutables: atomId.toString(),
-    rutaCarga: validation.file,
-    rutaLogs: logFile.replace("C:/teinsa/atomos/logs", "archive"),
-    errores: validation.errors,
-  };
-
-  return await validationService.cargarDatosAtomos(iData);
-};
+}
 
 export const getCatalogsData = async (req: Request, res: Response) => {
-  try {
-    const response = await validationService.obtenerCatalogos();
-    if (response.error) {
-      return res.status(400).json(response);
+    try {
+        // @ts-ignore
+        let response : any = await obtenerCatalogos();
+        // console.log("Response: ", response)
+        // console.log("Request Completed!")
+        // @ts-ignore
+        if (response.error === true) return res.status(400).json(response);
+        // @ts-ignore
+        res.status(200).json(response);
+    } catch (err) {
+        // @ts-ignore
+        return res.status(500).json({error: true, message:  err, records: []});
     }
-    res.status(200).json(response);
-  } catch (err) {
-    const error = err as Error;
-    return res
-      .status(500)
-      .json({ error: true, message: error.message, records: [] });
-  }
-};
+}
 
 export const postGestionarPeriodo = async (req: Request, res: Response) => {
-  const {
-    codBanco,
-    fechaCorte,
-    frecuencia,
-    tipoCorrida,
-    usuario,
-    ejecutables,
-  } = req.body;
-  const iData = {
-    codBanco,
-    fechaCorte,
-    frecuencia,
-    tipoCorrida,
-    usuario,
-    ejecutables,
-  };
+    try {
+        let iData: any;
+        iData = {
+            // @ts-ignore
+            codBanco: req.body.codBanco,
+            // @ts-ignore
+            fechaCorte: req.body.fechaCorte,
+            // @ts-ignore
+            frecuencia: req.body.frecuencia,
+            // @ts-ignore
+            tipoCorrida: req.body.tipoCorrida,
+            // @ts-ignore
+            usuario: req.body.usuario,
+            // @ts-ignore
+            ejecutables: req.body.ejecutables,
+        }
+        console.log("Input Data (Periodo): ", iData)
 
-  try {
-    await createFolders(filePathRoot, codBanco, fechaCorte);
-    const response = await validationService.gestionarPeriodo(iData);
-    if (response.error) {
-      return res
-        .status(400)
-        .json({ error: true, message: "No existen registros en el sistema." });
+        createFolders(filePathRoot, iData.codBanco, iData.fechaCorte);
+
+
+        let response: any;
+        response = await gestionarPeriodo(iData);
+        // console.log("Response: ", response)
+        // @ts-ignore
+        if (response.error === true) return res.status(400).json({
+            error: true,
+            message: 'No existen registros en el sistema.'
+        });
+        // @ts-ignore
+        res.status(200).json(response.record);
+    } catch (err) {
+        // @ts-ignore
+        return res.status(500).json({error: true, message: err});
     }
-    res.status(200).json(response.record);
-  } catch (err) {
-    const error = err as Error;
-    return res.status(500).json({ error: true, message: error.message });
-  }
-};
+}
 
 export const postCargarDatosAtomos = async (req: Request, res: Response) => {
-  const {
-    atomos: atomsCatalog,
-    ejecutables,
-    codBanco,
-    fechaCorte,
-    idPeriodo,
-    usuario,
-  } = req.body;
-  const atoms: string[] = ejecutables.split(",");
+    try {
+        let iData: any;
+        let response: any;
 
-  try {
-    for (const atomIdStr of atoms) {
-      const atomId = parseInt(atomIdStr, 10);
-      const atom = atomsCatalog.find((a: any) => a.ID_ATOMO === atomId);
-      if (atom) {
-        await processAtomFile(codBanco, fechaCorte, atom, idPeriodo, usuario);
-      }
+        const atomsCatalog: any = req.body.atomos;
+        const atoms: any  = req.body.ejecutables.split(',');
+        console.log("Atoms: ", atoms, " Length: ", atoms.length);
+
+        for(let i: number = 0; i < atoms.length; i++) {
+            let atomId: number = parseInt(atoms[i]);
+            let atom: any = atomsCatalog.filter((a: { ID_ATOMO: number; }) => a.ID_ATOMO === atomId);
+            let code: string = atom[0].ATOMO;
+            let filename: string = atom[0].ARCHIVO;
+            let convert: number = atom[0].CONVERTIR;
+            let xlsPath: string = filePathRoot + '/' + req.body.codBanco + '/' + req.body.fechaCorte + '/' + atom[0].ARCHIVO.replace("csv", "xls");
+            let txtPath: string = filePathRoot + '/' + req.body.codBanco + '/' + req.body.fechaCorte + '/' + atom[0].ARCHIVO;
+
+            if(convert) {
+                let conversion: any = exportExcelToTxt(xlsPath, txtPath, "~");
+                console.info('CONVERSION: ', conversion)
+                // @ts-ignore
+                if (conversion.error === true) return res.status(400).json({
+                    error: true,
+                    message: conversion.message
+                });
+            } else {
+                let encoded: any = convertUtf8ToUtf16LESync(txtPath, txtPath);
+                // @ts-ignore
+                if (encoded.error === true) return res.status(400).json({
+                    error: true,
+                    message: encoded.message
+                });
+            }
+
+            let validation: any = await  masterFileValidation(req.body.codBanco, req.body.fechaCorte, code, filename);
+            console.log('Validation Result: ', validation);
+
+            let logFile = validation.logs || ' ';
+
+            iData = {
+                    // @ts-ignore
+                    codBanco: req.body.codBanco,
+                    // @ts-ignore
+                    fechaCorte: req.body.fechaCorte,
+                    // @ts-ignore
+                    idPeriodo: req.body.idPeriodo,
+                    // @ts-ignore
+                    usuario: req.body.usuario,
+                    // @ts-ignore
+                    os: localSystem,
+                    // @ts-ignore
+                    ejecutables: atomId.toString(),
+                    // @ts-ignore
+                    rutaCarga: validation.file,
+                    // @ts-ignore
+                    rutaLogs: logFile.replace("C:/teinsa/atomos/logs", "archive"),
+                    // @ts-ignore
+                    errores: validation.errors,
+                };
+                console.log("Input Data: ", iData)
+
+                response = await cargarDatosAtomos(iData);
+                console.log("Response: ", response);
+
+        }
+
+        // @ts-ignore
+        if (response.error === true) return res.status(400).json({
+            error: true,
+            message: response.message
+        });
+        // @ts-ignore
+        res.status(200).json(response.record);
+    } catch (err) {
+        // @ts-ignore
+        console.error('ERROR: ', err)
+        return res.status(500).json({error: true, message: err});
     }
-    res
-      .status(200)
-      .json({ error: false, message: "Carga de atomos finalizada con éxito" });
-  } catch (err) {
-    const error = err as Error;
-    console.error("ERROR: ", error.message);
-    return res.status(500).json({ error: true, message: error.message });
-  }
-};
+}
+
 
 export const getConsultarAtomos = async (req: Request, res: Response) => {
-  const { codBanco } = req.params;
-  try {
-    const response = await validationService.consultarAtomos({ codBanco });
-    if (response.error) {
-      return res
-        .status(400)
-        .json({ error: true, message: "No existen registros en el sistema." });
+    try {
+        let iData: any;
+        iData = {
+            // @ts-ignore
+            codBanco: req.params.codBanco || null,
+        }
+        console.log("Input Data: ", iData)
+        let response: any;
+        response = await consultarAtomos(iData);
+        console.log("Response: ", response)
+        // @ts-ignore
+        if (response.error === true) return res.status(400).json({
+            error: true,
+            message: 'No existen registros en el sistema.'
+        });
+        // @ts-ignore
+        res.status(200).json(response.record);
+    } catch (err) {
+        // @ts-ignore
+        return res.status(500).json({error: true, message: err});
     }
-    res.status(200).json(response.record);
-  } catch (err) {
-    const error = err as Error;
-    return res.status(500).json({ error: true, message: error.message });
-  }
-};
+}
 
 export const getConsultarPeriodos = async (req: Request, res: Response) => {
-  const { codBanco } = req.params;
-  try {
-    const response = await validationService.consultarPeriodos({ codBanco });
-    if (response.error) {
-      return res
-        .status(400)
-        .json({ error: true, message: "No existen registros en el sistema." });
+    try {
+        let iData: any;
+        iData = {
+            // @ts-ignore
+            codBanco: req.params.codBanco,
+        }
+        console.log("Input Data: ", iData)
+        let response: any;
+        response = await consultarPeriodos(iData);
+        console.log("Response: ", response)
+        // @ts-ignore
+        if (response.error === true) return res.status(400).json({
+            error: true,
+            message: 'No existen registros en el sistema.'
+        });
+        // @ts-ignore
+        res.status(200).json(response.record);
+    } catch (err) {
+        // @ts-ignore
+        return res.status(500).json({error: true, message: err});
     }
-    res.status(200).json(response.record);
-  } catch (err) {
-    const error = err as Error;
-    return res.status(500).json({ error: true, message: error.message });
-  }
-};
+}
 
 export const getConsultarPeriodo = async (req: Request, res: Response) => {
-  const { idPeriodo } = req.params;
-  try {
-    const response = await validationService.consultarPeriodo({ idPeriodo });
-    if (response.error) {
-      return res
-        .status(400)
-        .json({ error: true, message: "No existen registros en el sistema." });
+    try {
+        let iData: any;
+        iData = {
+            // @ts-ignore
+            idPeriodo: req.params.idPeriodo,
+        }
+        console.log("Input Data: ", iData)
+        let response: any;
+        response = await consultarPeriodo(iData);
+        console.log("Response: ", response)
+        // @ts-ignore
+        if (response.error === true) return res.status(400).json({
+            error: true,
+            message: 'No existen registros en el sistema.'
+        });
+        // @ts-ignore
+        res.status(200).json(response.record);
+    } catch (err) {
+        // @ts-ignore
+        return res.status(500).json({error: true, message: err});
     }
-    res.status(200).json(response.record);
-  } catch (err) {
-    const error = err as Error;
-    return res.status(500).json({ error: true, message: error.message });
-  }
-};
+}
 
 export const getConsultarProcesos = async (req: Request, res: Response) => {
-  const { idPeriodo } = req.params;
-  try {
-    const response = await validationService.consultarProcesos({ idPeriodo });
-    if (response.error) {
-      return res
-        .status(400)
-        .json({ error: true, message: "No existen registros en el sistema." });
+    try {
+        let iData: any;
+        iData = {
+            // @ts-ignore
+            idPeriodo: req.params.idPeriodo,
+        }
+        console.log("Input Data: ", iData)
+        let response: any;
+        response = await consultarProcesos(iData);
+        console.log("Response: ", response)
+        // @ts-ignore
+        if (response.error === true) return res.status(400).json({
+            error: true,
+            message: 'No existen registros en el sistema.'
+        });
+        // @ts-ignore
+        res.status(200).json(response.record);
+    } catch (err) {
+        // @ts-ignore
+        return res.status(500).json({error: true, message: err});
     }
-    res.status(200).json(response.record);
-  } catch (err) {
-    const error = err as Error;
-    return res.status(500).json({ error: true, message: error.message });
-  }
-};
+}
 
-export const getConsultarProcesosAtomo = async (
-  req: Request,
-  res: Response,
-) => {
-  const { atomo } = req.params;
-  try {
-    const response = await validationService.consultarProcesosAtomo({ atomo });
-    if (response.error) {
-      return res
-        .status(400)
-        .json({ error: true, message: "No existen registros en el sistema." });
+export const getConsultarProcesosAtomo = async (req: Request, res: Response) => {
+    try {
+        let iData: any;
+        iData = {
+            // @ts-ignore
+            atomo: req.params.atomo,
+        }
+        console.log("Input Data: ", iData)
+        let response: any;
+        response = await consultarProcesosAtomo(iData);
+        console.log("Response: ", response)
+        // @ts-ignore
+        if (response.error === true) return res.status(400).json({
+            error: true,
+            message: 'No existen registros en el sistema.'
+        });
+        // @ts-ignore
+        res.status(200).json(response.record);
+    } catch (err) {
+        // @ts-ignore
+        return res.status(500).json({error: true, message: err});
     }
-    res.status(200).json(response.record);
-  } catch (err) {
-    const error = err as Error;
-    return res.status(500).json({ error: true, message: error.message });
-  }
-};
+}
 
-export const getConsultarProcesosFrecuencia = async (
-  req: Request,
-  res: Response,
-) => {
-  const { frecuencia, idPeriodo } = req.params;
-  try {
-    const response = await validationService.consultarProcesosFrecuencia({
-      frecuencia,
-      idPeriodo,
-    });
-    if (response.error) {
-      return res
-        .status(400)
-        .json({ error: true, message: "No existen registros en el sistema." });
+export const getConsultarProcesosFrecuencia = async (req: Request, res: Response) => {
+    try {
+        let iData: any;
+        iData = {
+            // @ts-ignore
+            frecuencia: req.params.frecuencia,
+            // @ts-ignore
+            idPeriodo: req.params.idPeriodo,
+        }
+        console.log("Input Data: ", iData)
+        let response: any;
+        response = await consultarProcesosFrecuencia(iData);
+        console.log("Response: ", response)
+        // @ts-ignore
+        if (response.error === true) return res.status(400).json({
+            error: true,
+            message: 'No existen registros en el sistema.'
+        });
+        // @ts-ignore
+        res.status(200).json(response.record);
+    } catch (err) {
+        // @ts-ignore
+        return res.status(500).json({error: true, message: err});
     }
-    res.status(200).json(response.record);
-  } catch (err) {
-    const error = err as Error;
-    return res.status(500).json({ error: true, message: error.message });
-  }
-};
+}
 
-export const postValidacionFuncionalResumen = async (
-  req: Request,
-  res: Response,
-) => {
-  const { codBanco, fechaSib, idAtomo, usuario } = req.body;
-  const iData = {
-    codBanco,
-    fechaSib,
-    idAtomo,
-    usuario: isEmpty(usuario, "system"),
-  };
-  try {
-    const response = await validationService.validacionFuncionalResumen(iData);
-    if (response.error) {
-      return res
-        .status(400)
-        .json({ error: true, message: "No existen registros en el sistema." });
+export const postValidacionFuncionalResumen = async (req: Request, res: Response) => {
+    try {
+        let iData: any;
+        iData = {
+            // @ts-ignore
+            codBanco: req.body.codBanco,
+            // @ts-ignore
+            fechaSib: req.body.fechaSib,
+            // @ts-ignore
+            idAtomo: req.body.idAtomo,
+            // @ts-ignore
+            usuario: isEmpty(req.body.usuario),
+        }
+        console.log("Input Data: ", iData)
+        let response: any;
+        response = await validacionFuncionalResumen(iData);
+        console.log("Response: ", response)
+        // @ts-ignore
+        if (response.error === true) return res.status(400).json({
+            error: true,
+            message: 'No existen registros en el sistema.'
+        });
+        // @ts-ignore
+        res.status(200).json(response.record);
+    } catch (err) {
+        // @ts-ignore
+        return res.status(500).json({error: true, message: err});
     }
-    res.status(200).json(response.record);
-  } catch (err) {
-    const error = err as Error;
-    return res.status(500).json({ error: true, message: error.message });
-  }
-};
+}
 
-export const postValidacionEstructuralResumen = async (
-  req: Request,
-  res: Response,
-) => {
-  const { codBanco, fechaSib, idAtomo, usuario } = req.body;
-  const iData = {
-    codBanco,
-    fechaSib,
-    idAtomo,
-    usuario: isEmpty(usuario, "system"),
-  };
-  try {
-    const response =
-      await validationService.validacionEstructuralResumen(iData);
-    if (response.error) {
-      return res
-        .status(400)
-        .json({ error: true, message: "No existen registros en el sistema." });
+export const postValidacionEstructuralResumen = async (req: Request, res: Response) => {
+    try {
+        let iData: any;
+        iData = {
+            // @ts-ignore
+            codBanco: req.body.codBanco,
+            // @ts-ignore
+            fechaSib: req.body.fechaSib,
+            // @ts-ignore
+            idAtomo: req.body.idAtomo,
+            // @ts-ignore
+            usuario: isEmpty(req.body.usuario)
+        }
+        console.log("Input Data: ", iData)
+        let response: any;
+        response = await validacionEstructuralResumen(iData);
+        console.log("Response: ", response)
+        // @ts-ignore
+        if (response.error === true) return res.status(400).json({
+            error: true,
+            message: 'No existen registros en el sistema.'
+        });
+        // @ts-ignore
+        res.status(200).json(response.record);
+    } catch (err) {
+        // @ts-ignore
+        return res.status(500).json({error: true, message: err});
     }
-    res.status(200).json(response.record);
-  } catch (err) {
-    const error = err as Error;
-    return res.status(500).json({ error: true, message: error.message });
-  }
-};
+}
 
-export const postValidacionFuncionalDetalle = async (
-  req: Request,
-  res: Response,
-) => {
-  const { codBanco, fechaSib, idAtomo, idError, usuario } = req.body;
-  const iData = {
-    codBanco,
-    fechaSib,
-    idAtomo,
-    idError,
-    usuario: isEmpty(usuario, "system"),
-  };
-  try {
-    const response = await validationService.validacionFuncionalDetalle(iData);
-    if (response.error) {
-      return res
-        .status(400)
-        .json({ error: true, message: "No existen registros en el sistema." });
+export const postValidacionFuncionalDetalle = async (req: Request, res: Response) => {
+    try {
+        let iData: any;
+        iData = {
+            // @ts-ignore
+            codBanco: req.body.codBanco,
+            // @ts-ignore
+            fechaSib: req.body.fechaSib,
+            // @ts-ignore
+            idAtomo: req.body.idAtomo,
+            // @ts-ignore
+            idError: req.body.idError,
+            // @ts-ignore
+            usuario: isEmpty(req.body.usuario)
+        }
+        console.log("Input Data: ", iData)
+        let response: any;
+        response = await validacionFuncionalDetalle(iData);
+        console.log("Response: ", response)
+        // @ts-ignore
+        if (response.error === true) return res.status(400).json({
+            error: true,
+            message: 'No existen registros en el sistema.'
+        });
+        // @ts-ignore
+        res.status(200).json(response.record);
+    } catch (err) {
+        // @ts-ignore
+        return res.status(500).json({error: true, message: err});
     }
-    res.status(200).json(response.record);
-  } catch (err) {
-    const error = err as Error;
-    return res.status(500).json({ error: true, message: error.message });
-  }
-};
+}
 
-export const postValidacionEstructuralDetalle = async (
-  req: Request,
-  res: Response,
-) => {
-  const { codBanco, fechaSib, idAtomo, idError, usuario } = req.body;
-  const iData = {
-    codBanco,
-    fechaSib,
-    idAtomo,
-    idError,
-    usuario: isEmpty(usuario, "system"),
-  };
-  try {
-    const response =
-      await validationService.validacionEstructuralDetalle(iData);
-    if (response.error) {
-      return res
-        .status(400)
-        .json({ error: true, message: "No existen registros en el sistema." });
+export const postValidacionEstructuralDetalle = async (req: Request, res: Response) => {
+    try {
+        let iData: any;
+        iData = {
+            // @ts-ignore
+            codBanco: req.body.codBanco,
+            // @ts-ignore
+            fechaSib: req.body.fechaSib,
+            // @ts-ignore
+            idAtomo: req.body.idAtomo,
+            // @ts-ignore
+            idError: req.body.idError,
+            // @ts-ignore
+            usuario: isEmpty(req.body.usuario)
+        }
+        console.log("Input Data: ", iData)
+        let response: any;
+        response = await validacionEstructuralDetalle(iData);
+        console.log("Response: ", response)
+        // @ts-ignore
+        if (response.error === true) return res.status(400).json({
+            error: true,
+            message: 'No existen registros en el sistema.'
+        });
+        // @ts-ignore
+        res.status(200).json(response.record);
+    } catch (err) {
+        // @ts-ignore
+        return res.status(500).json({error: true, message: err});
     }
-    res.status(200).json(response.record);
-  } catch (err) {
-    const error = err as Error;
-    return res.status(500).json({ error: true, message: error.message });
-  }
-};
+}
 
-export const postValidacionDetalleErrorEstructural = async (
-  req: Request,
-  res: Response,
-) => {
-  const {
-    codBanco,
-    fechaSib,
-    idAtomo,
-    idRec,
-    idRecActual,
-    idValidacion,
-    usuario,
-  } = req.body;
-  const iData = {
-    codBanco,
-    fechaSib,
-    idAtomo,
-    idRec,
-    idRecActual,
-    idValidacion,
-    usuario: isEmpty(usuario, "system"),
-  };
-  try {
-    const response =
-      await validationService.validacionDetalleErrorEstructural(iData);
-    if (response.error) {
-      return res
-        .status(400)
-        .json({ error: true, message: "No existen registros en el sistema." });
+export const postValidacionDetalleErrorEstructural = async (req: Request, res: Response) => {
+    try {
+        let iData: any;
+        iData = {
+            // @ts-ignore
+            codBanco: req.body.codBanco,
+            // @ts-ignore
+            fechaSib: req.body.fechaSib,
+            // @ts-ignore
+            idAtomo: req.body.idAtomo,
+            // @ts-ignore
+            idRec: req.body.idRec,
+            // @ts-ignore
+            idRecActual: req.body.idRecActual,
+            // @ts-ignore
+            idValidacion: req.body.idValidacion,
+            // @ts-ignore
+            usuario: isEmpty(req.body.usuario)
+        }
+        console.log("Input Data: ", iData)
+        let response: any;
+        response = await validacionDetalleErrorEstructural(iData);
+        console.log("Response: ", response)
+        // @ts-ignore
+        if (response.error === true) return res.status(400).json({
+            error: true,
+            message: 'No existen registros en el sistema.'
+        });
+        // @ts-ignore
+        res.status(200).json(response.record);
+    } catch (err) {
+        // @ts-ignore
+        return res.status(500).json({error: true, message: err});
     }
-    res.status(200).json(response.record);
-  } catch (err) {
-    const error = err as Error;
-    return res.status(500).json({ error: true, message: error.message });
-  }
-};
+}
 
-export const postValidacionDetalleErrorFuncional = async (
-  req: Request,
-  res: Response,
-) => {
-  const {
-    codBanco,
-    fechaSib,
-    idAtomo,
-    idRec,
-    idRecActual,
-    idValidacion,
-    usuario,
-  } = req.body;
-  const iData = {
-    codBanco,
-    fechaSib,
-    idAtomo,
-    idRec,
-    idRecActual,
-    idValidacion,
-    usuario: isEmpty(usuario, "system"),
-  };
-  try {
-    const response =
-      await validationService.validacionDetalleErrorFuncional(iData);
-    if (response.error) {
-      return res
-        .status(400)
-        .json({ error: true, message: "No existen registros en el sistema." });
+export const postValidacionDetalleErrorFuncional = async (req: Request, res: Response) => {
+    try {
+        let iData: any;
+        iData = {
+            // @ts-ignore
+            codBanco: req.body.codBanco,
+            // @ts-ignore
+            fechaSib: req.body.fechaSib,
+            // @ts-ignore
+            idAtomo: req.body.idAtomo,
+            // @ts-ignore
+            idRec: req.body.idRec,
+            // @ts-ignore
+            idRecActual: req.body.idRecActual,
+            // @ts-ignore
+            idValidacion: req.body.idValidacion,
+            // @ts-ignore
+            usuario: isEmpty(req.body.usuario)
+        }
+        console.log("Input Data: ", iData)
+        let response: any;
+        response = await validacionDetalleErrorFuncional(iData);
+        console.log("Response: ", response)
+        // @ts-ignore
+        if (response.error === true) return res.status(400).json({
+            error: true,
+            message: 'No existen registros en el sistema.'
+        });
+        // @ts-ignore
+        res.status(200).json(response.record);
+    } catch (err) {
+        // @ts-ignore
+        return res.status(500).json({error: true, message: err});
     }
-    res.status(200).json(response.record);
-  } catch (err) {
-    const error = err as Error;
-    return res.status(500).json({ error: true, message: error.message });
-  }
-};
+}
 
-export const postValidacionConsultaIndicadores = async (
-  req: Request,
-  res: Response,
-) => {
-  const { codBanco, atomo, fechaSib, usuario } = req.body;
-  const iData = {
-    codBanco,
-    atomo,
-    fechaSib,
-    usuario: isEmpty(usuario, "system"),
-  };
-  try {
-    const response =
-      await validationService.validacionConsultaIndicadores(iData);
-    if (response.error) {
-      return res
-        .status(400)
-        .json({ error: true, message: "No existen registros en el sistema." });
+export const postValidacionConsultaIndicadores = async (req: Request, res: Response) => {
+    try {
+        let iData: any;
+        iData = {
+            // @ts-ignore
+            codBanco: req.body.codBanco,
+            // @ts-ignore
+            atomo: req.body.atomo,
+            // @ts-ignore
+            fechaSIB: req.body.fechaSib,
+            // @ts-ignore
+            usuario: isEmpty(req.body.usuario)
+        }
+        console.log("Input Data: ", iData)
+        let response: any;
+        response = await validacionConsultaIndicadores(iData);
+        console.log("Response: ", response)
+        // @ts-ignore
+        if (response.error === true) return res.status(400).json({
+            error: true,
+            message: 'No existen registros en el sistema.'
+        });
+        // @ts-ignore
+        res.status(200).json(response.record);
+    } catch (err) {
+        // @ts-ignore
+        return res.status(500).json({error: true, message: err});
     }
-    res.status(200).json(response.record);
-  } catch (err) {
-    const error = err as Error;
-    return res.status(500).json({ error: true, message: error.message });
-  }
-};
+}
 
-export const postValidacionConsultaTablero = async (
-  req: Request,
-  res: Response,
-) => {
-  const { codBanco, atomo, fechaSib, usuario } = req.body;
-  const iData = {
-    codBanco,
-    atomo,
-    fechaSib: isEmpty(fechaSib, "2023-11-24"),
-    usuario: isEmpty(usuario, "system"),
-  };
-  try {
-    const response = await validationService.validacionConsultaTablero(iData);
-    if (response.error) {
-      return res
-        .status(400)
-        .json({ error: true, message: "No existen registros en el sistema." });
+export const postValidacionConsultaTablero = async (req: Request, res: Response) => {
+    try {
+        let iData: any;
+        iData = {
+            // @ts-ignore
+            codBanco: req.body.codBanco,
+            // @ts-ignore
+            atomo: req.body.atomo,
+            // @ts-ignore
+            fechaSib: isEmptyDate(req.body.fechaSib),
+            // @ts-ignore
+            usuario: isEmpty(req.body.usuario)
+        }
+        console.log("Input Data: ", iData)
+        let response: any;
+        response = await validacionConsultaTablero(iData);
+        console.log("Response: ", response)
+        // @ts-ignore
+        if (response.error === true) return res.status(400).json({
+            error: true,
+            message: 'No existen registros en el sistema.'
+        });
+        // @ts-ignore
+        res.status(200).json(response.record);
+    } catch (err) {
+        // @ts-ignore
+        return res.status(500).json({error: true, message: err});
     }
-    res.status(200).json(response.record);
-  } catch (err) {
-    const error = err as Error;
-    return res.status(500).json({ error: true, message: error.message });
-  }
-};
+}
 
-export const getConsultarBitacoraValidacion = async (
-  req: Request,
-  res: Response,
-) => {
-  const { codBanco } = req.params;
-  try {
-    const response = await validationService.validacionConsultaBitacora({
-      codBanco,
-    });
-    if (response.error) {
-      return res
-        .status(400)
-        .json({ error: true, message: "No existen registros en el sistema." });
+export const getConsultarBitacoraValidacion = async (req: Request, res: Response) => {
+    try {
+        let iData: any;
+        iData = {
+            // @ts-ignore
+            codBanco: req.params.codBanco,
+        }
+        console.log("Input Data: ", iData)
+        let response: any;
+        response = await validacionConsultaBitacora(iData);
+        console.log("Response: ", response)
+        // @ts-ignore
+        if (response.error === true) return res.status(400).json({
+            error: true,
+            message: 'No existen registros en el sistema.'
+        });
+        // @ts-ignore
+        res.status(200).json(response.record);
+    } catch (err) {
+        // @ts-ignore
+        return res.status(500).json({error: true, message: err});
     }
-    res.status(200).json(response.record);
-  } catch (err) {
-    const error = err as Error;
-    return res.status(500).json({ error: true, message: error.message });
-  }
-};
+}
 
 export const getFileValidations = async (req: Request, res: Response) => {
-  const { atomo } = req.params;
-  try {
-    const response = await validationService.consultarValidacionesArchivo({
-      atomo,
-    });
-    if (response.error) {
-      return res.status(400).json(response);
+    try {
+        let iData: any;
+        iData = {
+            // @ts-ignore
+            atomo: req.params.atomo,
+        }
+        console.log("Input Data: ", iData)
+        // @ts-ignore
+        let response : any = await consultarValidacionesArchivo(iData);
+        // console.log("Response: ", response)
+        console.log("Request Completed!")
+        // @ts-ignore
+        if (response.error === true) return res.status(400).json(response);
+        // @ts-ignore
+        res.status(200).json(response);
+    } catch (err) {
+        // @ts-ignore
+        return res.status(500).json({error: true, message:  err, records: []});
     }
-    res.status(200).json(response);
-  } catch (err) {
-    const error = err as Error;
-    return res
-      .status(500)
-      .json({ error: true, message: error.message, records: [] });
-  }
-};
+}

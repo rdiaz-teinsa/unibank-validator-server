@@ -68,8 +68,8 @@ envData = {
         LDAP_BASE_DN: 'DC=teinsa-pa,DC=com',
         LDAP_USERNAME: 'admin@teinsa-pa.com',
         LDAP_PASSWORD: '{"iv":"b22dc34c32a3a80d73ae978c0532f982","content":"a47edc0172dea80dc1"}',
-        AZURE_TENANT_ID: 'cf2a7612-3a84-4aac-a4cf-b029e6178dbe',
-        AZURE_CLIENTE_ID: '8c72f1e3-25f2-4335-bf89-16afbbf24f9e',
+        AZURE_TENANT_ID: 'b9ae648a-1d14-45bd-a2b0-0e196e8a6678',
+        AZURE_CLIENTE_ID: '91fcb762-c31f-48ef-a095-c7b17651c8ae',
         AUTHORIZATION_MODEL: 'AZURE',
         WHITELIST: {
             HTTP: 'http://' + domain + '/',

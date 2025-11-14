@@ -40,7 +40,13 @@ export const exportExcelToTxt = (inputPath: string, outputPath: string, delimite
             headers.push(cell ? String(cell.v).trim() : "");
         }
 
-        const data: any[][] = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
+        // const data: any[][] = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
+
+        const data: any[][] = XLSX.utils.sheet_to_json(sheet, {
+            header: 1,
+            defval: "",
+            raw: false   // <-- fuerza lectura usando el formato (usa cell.w)
+        });
 
         if (data.length <= 1) {
             return {

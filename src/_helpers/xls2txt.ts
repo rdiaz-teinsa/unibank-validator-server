@@ -37,10 +37,10 @@ export const exportExcelToTxt = (inputPath: string, outputPath: string, delimite
         for (let c = range.s.c; c <= range.e.c; c++) {
             const cellAddress = XLSX.utils.encode_cell({ r: range.s.r, c });
             const cell = sheet[cellAddress];
-            headers.push(cell ? String(cell.v).trim() : "");
+            headers.push(cell ? String(cell.w).trim() : "");
         }
 
-        // const data: any[][] = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
+
 
         const data: any[][] = XLSX.utils.sheet_to_json(sheet, {
             header: 1,
@@ -48,7 +48,7 @@ export const exportExcelToTxt = (inputPath: string, outputPath: string, delimite
             raw: false   // <-- fuerza lectura usando el formato (usa cell.w)
         });
 
-        if (data.length <= 1) {
+        if (data.length < 1) {
             return {
                 error: true,
                 message: "La hoja de Excel está vacía o solo contiene encabezados: " + inputPath

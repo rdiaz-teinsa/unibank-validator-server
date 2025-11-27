@@ -1,4 +1,4 @@
-let env = 'dev';
+let env = 'uat';
 let envData: any;
 let domain = 'unibank.tval.online';
 let folder = 'unibank-validator-server';

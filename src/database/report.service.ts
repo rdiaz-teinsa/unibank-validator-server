@@ -37,7 +37,6 @@ export const callRepComparacionCatalogos = async (pData : any) => {
     }
 };
 
-
 // 100 - COMPARACIONES
 export const callRepComparacion = async (pData : any) => {
     let conn = new sql.ConnectionPool(dbConfig);
@@ -1204,7 +1203,6 @@ export const callRepComparacionBAN06CINUAT03 = async (pData : any) => {
 };
 
 
-
 // 800 - AT21 UTILIDAD POR REGIÓN
 export const callRepAT21UtilidadRegion = async (pData : any) => {
     let conn = new sql.ConnectionPool(dbConfig);
@@ -1259,6 +1257,29 @@ export const callRepValidacionMatematicaDetalle = async (pData : any) => {
             .input('fechaCorte', sql.DateTime, pData.fechaCorte)
             .input('numRegla', sql.Int, pData.numRegla)
             .query('exec TEINSA_CONFIG.dbo.USP_VAL_REP_VALIDACION_MATEMATICA_DRILLDOWN @codBanco, @fechaCorte, @numRegla');
+        await conn.close();
+        console.log("Respuesta Servicio: ", JSON.stringify(result))
+        if(result.recordset.length > 0) {
+            return {"error": false, "record": result.recordset};
+        } else {
+            return {"error": false, "message": "No existen registros asociados a su consulta.", "record": []};
+        }
+    } catch (err) {
+        console.error('Se identificaron errores en la ejecución del SP, Error: ', err);
+        throw err;
+    }
+};
+
+
+// 1002 - CUADRE PB01
+export const callRepCuadrePb01 = async (pData : any) => {
+    let conn = new sql.ConnectionPool(dbConfig);
+    await conn.connect();
+    try {
+        let result = await conn.request()
+            .input('codBanco', sql.VarChar(10), pData.codBanco)
+            .input('fechaCorte', sql.DateTime, pData.fechaCorte)
+            .query('exec TEINSA_CONFIG.dbo.USP_VAL_REP_CUADRE_PB01 @codBanco, @fechaCorte');
         await conn.close();
         console.log("Respuesta Servicio: ", JSON.stringify(result))
         if(result.recordset.length > 0) {

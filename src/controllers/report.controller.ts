@@ -51,7 +51,8 @@ import {
     callRepCuadreAT12BAN06TipoGarantia,
     callRepComparacionBAN06CINU,
     callRepComparacionBAN06CINUAT03,
-    callCatalogosRepPrestamosExcluidos
+    callCatalogosRepPrestamosExcluidos,
+    callRepCuadrePb01
 } from '../database/report.service';
 
 export const getReportData = async (req: Request, res: Response) => {
@@ -195,6 +196,8 @@ export const getReportData = async (req: Request, res: Response) => {
             response = await callRepValidacionMatematica(iData)
         } else if (rptcode === '1001') {
             response = await callRepValidacionMatematicaDetalle(iData)
+        } else if (rptcode === '1002') {
+            response = await callRepCuadrePb01(iData)
         }
 
         let records : any = [];

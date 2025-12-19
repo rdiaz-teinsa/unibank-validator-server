@@ -1,7 +1,8 @@
 import * as XLSX from "xlsx";
 import * as fs from "fs";
 import * as path from "path";
-import * as iconv from "iconv-lite";
+// import * as iconv from "iconv-lite";
+import iconv = require("iconv-lite");
 import * as chardet from 'chardet';
 
 export const convertUtf8ToUtf16LESync = (inputPath: string, outputPath: string) => {

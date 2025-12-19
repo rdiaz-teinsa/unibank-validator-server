@@ -3,7 +3,6 @@ import * as fs from "fs";
 import * as path from "path";
 import * as iconv from "iconv-lite";
 
-
 function getExcelDecimals(cell: XLSX.CellObject): number {
     if (!cell || typeof cell.z !== "string") return 0;
 
@@ -27,11 +26,6 @@ function formatCell(cell?: XLSX.CellObject): string {
 
     return String(cell.v ?? "");
 }
-
-import * as XLSX from "xlsx";
-import * as fs from "fs";
-import * as path from "path";
-import * as iconv from "iconv-lite";
 
 export const exportExcelToTxt = (
     inputPath: string,

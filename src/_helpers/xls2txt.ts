@@ -3,79 +3,85 @@ import * as fs from "fs";
 import * as path from "path";
 import * as iconv from "iconv-lite";
 
-function getExcelDecimals(cell: XLSX.CellObject): number {
-    if (!cell || typeof cell.z !== "string") return 0;
-
-    const match = cell.z.match(/\.(0+|#+)/);
-    return match ? match[1].length : 0;
-}
-
-function safeToFixed(value: number, decimals: number): string {
-    const factor = Math.pow(10, decimals);
-    const normalized = Math.round((value + Number.EPSILON) * factor) / factor;
-    return normalized.toFixed(decimals);
-}
-
-function formatCell(cell?: XLSX.CellObject): string {
-    if (!cell) return "";
-
-    if (cell.t === "n" && typeof cell.v === "number") {
-        const decimals = getExcelDecimals(cell);
-        return safeToFixed(cell.v, decimals);
-    }
-
-    return String(cell.v ?? "");
-}
-
-export const exportExcelToTxt = (
-    inputPath: string,
-    outputPath: string,
-    delimiter: string
-) => {
+export const exportExcelToTxt = (inputPath: string, outputPath: string, delimiter: string) => {
     try {
         if (!fs.existsSync(inputPath)) {
-            return { error: true, message: "El archivo origen no existe: " + inputPath };
+            return {
+                error: true,
+                message: "El archivo origen solicitado no existe o está corrupto: " + inputPath
+            };
         }
 
         const ext = path.extname(inputPath).toLowerCase();
-        if (![".xls", ".xlsx"].includes(ext)) {
-            return { error: true, message: "Formato no soportado: " + inputPath };
+        if (ext !== ".xls" && ext !== ".xlsx") {
+            return {
+                error: true,
+                message: "Formato no soportado. Solo se permiten archivos .xls o .xlsx: " + inputPath
+            };
         }
 
-        const workbook = XLSX.readFile(inputPath, { raw: false });
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        if (!sheet || !sheet["!ref"]) {
-            return { error: true, message: "Hoja vacía o inválida" };
+        const workbook = XLSX.readFile(inputPath, { raw: false, type: "binary" });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+
+        if (!sheet) {
+            return {
+                error: true,
+                message: "No se encontró ninguna hoja en el archivo Excel: " + inputPath
+            };
         }
 
-        const range = XLSX.utils.decode_range(sheet["!ref"]);
-        const lines: string[] = [];
+        const range = XLSX.utils.decode_range(sheet["!ref"]!);
 
-        // Encabezados
         const headers: string[] = [];
         for (let c = range.s.c; c <= range.e.c; c++) {
-            const addr = XLSX.utils.encode_cell({ r: range.s.r, c });
-            headers.push(formatCell(sheet[addr]));
+            const cellAddress = XLSX.utils.encode_cell({ r: range.s.r, c });
+            const cell = sheet[cellAddress];
+            headers.push(cell ? String(cell.v).trim() : "");
         }
-        lines.push(headers.join(delimiter));
 
-        // Filas
-        for (let r = range.s.r + 1; r <= range.e.r; r++) {
-            const row: string[] = [];
-            for (let c = range.s.c; c <= range.e.c; c++) {
-                const addr = XLSX.utils.encode_cell({ r, c });
-                row.push(formatCell(sheet[addr]));
-            }
-            lines.push(row.join(delimiter));
+
+
+        const data: any[][] = XLSX.utils.sheet_to_json(sheet, {
+            header: 1,
+            defval: "",
+            raw: false   // <-- fuerza lectura usando el formato (usa cell.w)
+        });
+
+        if (data.length < 1) {
+            return {
+                error: true,
+                message: "La hoja de Excel está vacía o solo contiene encabezados: " + inputPath
+            };
+        }
+
+        const rows = data.slice(1);
+
+        const lines: string[] = [];
+        lines.push(headers.join(delimiter));
+        for (const row of rows) {
+            const line = row.map(cell => String(cell ?? "")).join(delimiter);
+            lines.push(line);
         }
 
         const txtContent = lines.join("\n");
-        const bom = Buffer.from([0xff, 0xfe]);
+
+        const bom = Buffer.from([0xFF, 0xFE]);
         const buffer = Buffer.concat([bom, iconv.encode(txtContent, "utf16-le")]);
+
+        // const buffer = iconv.encode(txtContent, "utf16-le");
         fs.writeFileSync(outputPath, buffer);
 
-        return { error: false, message: "Archivo exportado correctamente" };
-    } catch (err: any) {
-        return { error: true, message: err.message };
+        console.log(`Archivo exportado correctamente a: ${outputPath}`);
+        return {
+            error: false,
+            message: "Archivo exportado correctamente a: " + outputPath
+        };
+    } catch (error: any) {
+        console.error("Error al exportar el archivo:", error.message);
+        return {
+            error: true,
+            message: "Error al exportar el archivo: " + error.message
+        };
     }
 };

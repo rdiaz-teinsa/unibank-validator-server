@@ -3,6 +3,31 @@ import * as fs from "fs";
 import * as path from "path";
 import * as iconv from "iconv-lite";
 
+function getExcelDecimals(cell: XLSX.CellObject): number | null {
+    if (!cell || typeof cell.z !== "string") return null;
+    const format = cell.z.replace(/[^0#.,]/g, "");
+    const decimalMatch = format.match(/\.(0+|#+)/);
+    if (!decimalMatch) return 0;
+    return decimalMatch[1].length;
+}
+
+function formatCellValue(cell: XLSX.CellObject): string {
+    if (!cell) return "";
+    if (cell.t === "s") {
+        return String(cell.v).trim();
+    }
+    if (cell.t === "n" && typeof cell.v === "number") {
+        const decimals = getExcelDecimals(cell);
+
+        if (decimals !== null) {
+            return cell.v.toFixed(decimals);
+        }
+        return cell.w ?? String(cell.v);
+    }
+    return cell.w ?? String(cell.v ?? "");
+}
+
+
 export const exportExcelToTxt = (inputPath: string, outputPath: string, delimiter: string) => {
     try {
         if (!fs.existsSync(inputPath)) {
@@ -60,8 +85,18 @@ export const exportExcelToTxt = (inputPath: string, outputPath: string, delimite
         const lines: string[] = [];
         lines.push(headers.join(delimiter));
         for (const row of rows) {
-            const line = row.map(cell => String(cell ?? "")).join(delimiter);
-            lines.push(line);
+            // const line = row.map(cell => String(cell ?? "")).join(delimiter);
+            for (let r = range.s.r + 1; r <= range.e.r; r++) {
+                const rowValues: string[] = [];
+
+                for (let c = range.s.c; c <= range.e.c; c++) {
+                    const addr = XLSX.utils.encode_cell({ r, c });
+                    const cell = sheet[addr] as XLSX.CellObject | undefined;
+                    rowValues.push(formatCellValue(cell!));
+                }
+                lines.push(rowValues.join(delimiter));
+            }
+            // lines.push(line);
         }
 
         const txtContent = lines.join("\n");

@@ -3,120 +3,85 @@ import * as fs from "fs";
 import * as path from "path";
 import * as iconv from "iconv-lite";
 
-function getExcelDecimals(cell: XLSX.CellObject): number | null {
-    if (!cell || typeof cell.z !== "string") return null;
-    const format = cell.z.replace(/[^0#.,]/g, "");
-    const decimalMatch = format.match(/\.(0+|#+)/);
-    if (!decimalMatch) return 0;
-    return decimalMatch[1].length;
+
+function getExcelDecimals(cell: XLSX.CellObject): number {
+    if (!cell || typeof cell.z !== "string") return 0;
+
+    const match = cell.z.match(/\.(0+|#+)/);
+    return match ? match[1].length : 0;
 }
 
-function formatCellValue(cell: XLSX.CellObject): string {
+function safeToFixed(value: number, decimals: number): string {
+    const factor = Math.pow(10, decimals);
+    const normalized = Math.round((value + Number.EPSILON) * factor) / factor;
+    return normalized.toFixed(decimals);
+}
+
+function formatCell(cell?: XLSX.CellObject): string {
     if (!cell) return "";
-    if (cell.t === "s") {
-        return String(cell.v).trim();
-    }
+
     if (cell.t === "n" && typeof cell.v === "number") {
         const decimals = getExcelDecimals(cell);
-
-        if (decimals !== null) {
-            return cell.v.toFixed(decimals);
-        }
-        return cell.w ?? String(cell.v);
+        return safeToFixed(cell.v, decimals);
     }
-    return cell.w ?? String(cell.v ?? "");
+
+    return String(cell.v ?? "");
 }
 
+import * as XLSX from "xlsx";
+import * as fs from "fs";
+import * as path from "path";
+import * as iconv from "iconv-lite";
 
-export const exportExcelToTxt = (inputPath: string, outputPath: string, delimiter: string) => {
+export const exportExcelToTxt = (
+    inputPath: string,
+    outputPath: string,
+    delimiter: string
+) => {
     try {
         if (!fs.existsSync(inputPath)) {
-            return {
-                error: true,
-                message: "El archivo origen solicitado no existe o está corrupto: " + inputPath
-            };
+            return { error: true, message: "El archivo origen no existe: " + inputPath };
         }
 
         const ext = path.extname(inputPath).toLowerCase();
-        if (ext !== ".xls" && ext !== ".xlsx") {
-            return {
-                error: true,
-                message: "Formato no soportado. Solo se permiten archivos .xls o .xlsx: " + inputPath
-            };
+        if (![".xls", ".xlsx"].includes(ext)) {
+            return { error: true, message: "Formato no soportado: " + inputPath };
         }
 
-        const workbook = XLSX.readFile(inputPath, { raw: false, type: "binary" });
-        const sheetName = workbook.SheetNames[0];
-        const sheet = workbook.Sheets[sheetName];
-
-        if (!sheet) {
-            return {
-                error: true,
-                message: "No se encontró ninguna hoja en el archivo Excel: " + inputPath
-            };
+        const workbook = XLSX.readFile(inputPath, { raw: false });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        if (!sheet || !sheet["!ref"]) {
+            return { error: true, message: "Hoja vacía o inválida" };
         }
 
-        const range = XLSX.utils.decode_range(sheet["!ref"]!);
+        const range = XLSX.utils.decode_range(sheet["!ref"]);
+        const lines: string[] = [];
 
+        // Encabezados
         const headers: string[] = [];
         for (let c = range.s.c; c <= range.e.c; c++) {
-            const cellAddress = XLSX.utils.encode_cell({ r: range.s.r, c });
-            const cell = sheet[cellAddress];
-            headers.push(cell ? String(cell.v).trim() : "");
+            const addr = XLSX.utils.encode_cell({ r: range.s.r, c });
+            headers.push(formatCell(sheet[addr]));
         }
-
-
-
-        const data: any[][] = XLSX.utils.sheet_to_json(sheet, {
-            header: 1,
-            defval: "",
-            raw: false   // <-- fuerza lectura usando el formato (usa cell.w)
-        });
-
-        if (data.length < 1) {
-            return {
-                error: true,
-                message: "La hoja de Excel está vacía o solo contiene encabezados: " + inputPath
-            };
-        }
-
-        const rows = data.slice(1);
-
-        const lines: string[] = [];
         lines.push(headers.join(delimiter));
-        for (const row of rows) {
-            // const line = row.map(cell => String(cell ?? "")).join(delimiter);
-            for (let r = range.s.r + 1; r <= range.e.r; r++) {
-                const rowValues: string[] = [];
 
-                for (let c = range.s.c; c <= range.e.c; c++) {
-                    const addr = XLSX.utils.encode_cell({ r, c });
-                    const cell = sheet[addr] as XLSX.CellObject | undefined;
-                    rowValues.push(formatCellValue(cell!));
-                }
-                lines.push(rowValues.join(delimiter));
+        // Filas
+        for (let r = range.s.r + 1; r <= range.e.r; r++) {
+            const row: string[] = [];
+            for (let c = range.s.c; c <= range.e.c; c++) {
+                const addr = XLSX.utils.encode_cell({ r, c });
+                row.push(formatCell(sheet[addr]));
             }
-            // lines.push(line);
+            lines.push(row.join(delimiter));
         }
 
         const txtContent = lines.join("\n");
-
-        const bom = Buffer.from([0xFF, 0xFE]);
+        const bom = Buffer.from([0xff, 0xfe]);
         const buffer = Buffer.concat([bom, iconv.encode(txtContent, "utf16-le")]);
-
-        // const buffer = iconv.encode(txtContent, "utf16-le");
         fs.writeFileSync(outputPath, buffer);
 
-        console.log(`Archivo exportado correctamente a: ${outputPath}`);
-        return {
-            error: false,
-            message: "Archivo exportado correctamente a: " + outputPath
-        };
-    } catch (error: any) {
-        console.error("Error al exportar el archivo:", error.message);
-        return {
-            error: true,
-            message: "Error al exportar el archivo: " + error.message
-        };
+        return { error: false, message: "Archivo exportado correctamente" };
+    } catch (err: any) {
+        return { error: true, message: err.message };
     }
 };

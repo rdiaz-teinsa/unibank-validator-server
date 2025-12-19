@@ -1,8 +1,8 @@
 import * as XLSX from "xlsx";
 import * as fs from "fs";
 import * as path from "path";
+import iconv from 'iconv-lite';
 // import * as iconv from "iconv-lite";
-import iconv = require("iconv-lite");
 
 export const exportExcelToTxt = (inputPath: string, outputPath: string, delimiter: string) => {
     try {

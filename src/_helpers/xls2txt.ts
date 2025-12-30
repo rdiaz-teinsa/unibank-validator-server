@@ -36,7 +36,7 @@ export const exportExcelToTxt = (
         }
 
         const workbook = XLSX.readFile(inputPath, {
-            raw: true,          // 🔒 CRÍTICO: evita formato Excel
+            raw: false,          // 🔒 CRÍTICO: evita formato Excel
             cellText: false,
             type: "binary"
         });
@@ -61,7 +61,7 @@ export const exportExcelToTxt = (
         for (let c = range.s.c; c <= range.e.c; c++) {
             const addr = XLSX.utils.encode_cell({ r: range.s.r, c });
             const cell = sheet[addr];
-            headers.push(exportValue(cell?.v ?? ""));
+            headers.push(exportValue(cell?.w ?? ""));
         }
 
         /* ==========================
@@ -70,7 +70,7 @@ export const exportExcelToTxt = (
         const data: any[][] = XLSX.utils.sheet_to_json(sheet, {
             header: 1,
             defval: "",
-            raw: true        // 🔒 evita redondeos
+            raw: false        // 🔒 evita redondeos
         });
 
         if (data.length <= 1) {
@@ -87,7 +87,7 @@ export const exportExcelToTxt = (
 
         for (const row of rows) {
             const line = row
-                .map(cell => exportValue(cell))
+                .map(cell => exportValue(cell.w))
                 .join(delimiter);
             lines.push(line);
         }

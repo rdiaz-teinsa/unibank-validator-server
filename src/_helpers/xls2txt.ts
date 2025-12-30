@@ -1,17 +1,28 @@
 import * as XLSX from "xlsx";
 import * as fs from "fs";
 import * as path from "path";
-import iconv from 'iconv-lite';
-// import * as iconv from "iconv-lite";
+import * as iconv from "iconv-lite";
 
-function exportValue(cell: any): string {
-    if (cell == null) return "";
+function convertNumericCellsToText(sheet: XLSX.WorkSheet) {
+    if (!sheet["!ref"]) return;
 
-    if (typeof cell === "number") {
-        // Convierte sin aplicar formato Excel (evita redondeo)
-        return cell.toString();
+    const range = XLSX.utils.decode_range(sheet["!ref"]);
+
+    for (let r = range.s.r; r <= range.e.r; r++) {
+        for (let c = range.s.c; c <= range.e.c; c++) {
+            const addr = XLSX.utils.encode_cell({ r, c });
+            const cell = sheet[addr];
+
+            if (!cell) continue;
+
+            // Solo números reales
+            if (cell.t === "n") {
+                cell.v = cell.v.toString();
+                cell.t = "s";
+                delete cell.w; // elimina formato Excel
+            }
+        }
     }
-    return String(cell).trim();
 }
 
 export const exportExcelToTxt = (
@@ -36,8 +47,7 @@ export const exportExcelToTxt = (
         }
 
         const workbook = XLSX.readFile(inputPath, {
-            raw: false,          // 🔒 CRÍTICO: evita formato Excel
-            cellText: false,
+            raw: false,           // 👈 CRÍTICO
             type: "binary"
         });
 
@@ -51,26 +61,30 @@ export const exportExcelToTxt = (
             };
         }
 
+        /* ==========================================
+           🔒 CONVERSIÓN GLOBAL NÚMEROS → TEXTO
+        ========================================== */
+        convertNumericCellsToText(sheet);
+
         const range = XLSX.utils.decode_range(sheet["!ref"]);
 
-        /* ==========================
-           HEADERS (RAW)
-        ========================== */
+        /* ==========================================
+           HEADERS
+        ========================================== */
         const headers: string[] = [];
-
         for (let c = range.s.c; c <= range.e.c; c++) {
             const addr = XLSX.utils.encode_cell({ r: range.s.r, c });
             const cell = sheet[addr];
-            headers.push(exportValue(cell?.w ?? ""));
+            headers.push(cell ? String(cell.w).trim() : "");
         }
 
-        /* ==========================
-           DATA (RAW)
-        ========================== */
+        /* ==========================================
+           DATA (YA TODO ES TEXTO)
+        ========================================== */
         const data: any[][] = XLSX.utils.sheet_to_json(sheet, {
             header: 1,
             defval: "",
-            raw: false        // 🔒 evita redondeos
+            raw: true
         });
 
         if (data.length <= 1) {
@@ -86,15 +100,13 @@ export const exportExcelToTxt = (
         lines.push(headers.join(delimiter));
 
         for (const row of rows) {
-            const line = row
-                .map(cell => exportValue(cell.w))
-                .join(delimiter);
+            const line = row.map(cell => String(cell ?? "")).join(delimiter);
             lines.push(line);
         }
 
-        /* ==========================
+        /* ==========================================
            WRITE TXT UTF-16 LE
-        ========================== */
+        ========================================== */
         const txtContent = lines.join("\n");
         const bom = Buffer.from([0xff, 0xfe]);
         const buffer = Buffer.concat([bom, iconv.encode(txtContent, "utf16-le")]);
@@ -113,3 +125,5 @@ export const exportExcelToTxt = (
         };
     }
 };
+
+

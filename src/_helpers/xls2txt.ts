@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as iconv from "iconv-lite";
 
-function convertNumericCellsToText(sheet: XLSX.WorkSheet) {
+function convertNumericCellsToTextUsingW(sheet: XLSX.WorkSheet) {
     if (!sheet["!ref"]) return;
 
     const range = XLSX.utils.decode_range(sheet["!ref"]);
@@ -15,15 +15,16 @@ function convertNumericCellsToText(sheet: XLSX.WorkSheet) {
 
             if (!cell) continue;
 
-            // Solo números reales
-            if (cell.t === "n") {
-                cell.v = cell.v.toString();
-                cell.t = "s";
-                delete cell.w; // elimina formato Excel
+            // Solo celdas numéricas con representación visible
+            if (cell.t === "n" && cell.w != null) {
+                cell.v = String(cell.w); // 👈 valor visual exacto
+                cell.t = "s";            // forzar texto
+                delete cell.w;           // evita reprocesos
             }
         }
     }
 }
+
 
 export const exportExcelToTxt = (
     inputPath: string,
@@ -47,7 +48,7 @@ export const exportExcelToTxt = (
         }
 
         const workbook = XLSX.readFile(inputPath, {
-            raw: false,           // 👈 CRÍTICO
+            raw: false,      // necesario para que cell.w exista
             type: "binary"
         });
 
@@ -62,9 +63,9 @@ export const exportExcelToTxt = (
         }
 
         /* ==========================================
-           🔒 CONVERSIÓN GLOBAL NÚMEROS → TEXTO
+           🔒 CONVERSIÓN GLOBAL NÚMEROS → TEXTO (cell.w)
         ========================================== */
-        convertNumericCellsToText(sheet);
+        convertNumericCellsToTextUsingW(sheet);
 
         const range = XLSX.utils.decode_range(sheet["!ref"]);
 
@@ -75,7 +76,7 @@ export const exportExcelToTxt = (
         for (let c = range.s.c; c <= range.e.c; c++) {
             const addr = XLSX.utils.encode_cell({ r: range.s.r, c });
             const cell = sheet[addr];
-            headers.push(cell ? String(cell.w).trim() : "");
+            headers.push(cell ? String(cell.v).trim() : "");
         }
 
         /* ==========================================
@@ -125,5 +126,3 @@ export const exportExcelToTxt = (
         };
     }
 };
-
-

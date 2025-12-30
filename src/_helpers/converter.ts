@@ -4,7 +4,7 @@ import * as path from "path";
 import iconv from 'iconv-lite';
 // import * as iconv from "iconv-lite";
 
-const exportExcelToTxt = (inputPath: string, outputPath: string, delimiter: string) => {
+export const exportExcelToTxt = (inputPath: string, outputPath: string, delimiter: string) => {
     try {
         // Validar existencia del archivo
         if (!fs.existsSync(inputPath)) {
@@ -43,7 +43,7 @@ const exportExcelToTxt = (inputPath: string, outputPath: string, delimiter: stri
         for (let c = range.s.c; c <= range.e.c; c++) {
             const cellAddress = XLSX.utils.encode_cell({ r: range.s.r, c });
             const cell = sheet[cellAddress];
-            headers.push(cell ? String(cell.v).trim() : "");
+            headers.push(cell ? String(cell.w).trim() : "");
         }
 
         // Obtener los datos en formato de matriz (mantiene orden original)
@@ -90,11 +90,4 @@ const exportExcelToTxt = (inputPath: string, outputPath: string, delimiter: stri
     }
 };
 
-// Ejemplo de uso
-const result = exportExcelToTxt(
-    "/var/teinsa/unibank-validator-server/archive/data/236/20250101/AT04.xls",
-    "/var/teinsa/unibank-validator-server/archive/data/236/20250101/AT04.txt",
-    "~"
-);
 
-console.log(result);

@@ -38,7 +38,7 @@ export const exportExcelToTxt = (inputPath: string, outputPath: string, delimite
         for (let c = range.s.c; c <= range.e.c; c++) {
             const cellAddress = XLSX.utils.encode_cell({ r: range.s.r, c });
             const cell = sheet[cellAddress];
-            headers.push(cell ? String(cell.v).trim() : "");
+            headers.push(cell ? String(cell.w).trim() : "");
         }
 
 

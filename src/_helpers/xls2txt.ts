@@ -16,10 +16,12 @@ function convertNumericCellsToTextUsingW(sheet: XLSX.WorkSheet) {
             if (!cell) continue;
 
             // Solo celdas numéricas con representación visible
-            if (cell.t === "n" && cell.w != null) {
-                cell.v = String(cell.w); // 👈 valor visual exacto
+            if (cell.t === "n") {
+                if (cell.w != null) {
+                    cell.v = String(cell.w); // 👈 valor visual exacto
+                    delete cell.w;           // evita reprocesos
+                }
                 cell.t = "s";            // forzar texto
-                delete cell.w;           // evita reprocesos
             }
         }
     }

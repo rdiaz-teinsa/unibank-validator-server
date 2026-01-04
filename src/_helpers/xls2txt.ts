@@ -1,39 +1,84 @@
-import * as XLSX from "xlsx";
+// import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 import * as fs from "fs";
 import * as path from "path";
 import * as iconv from "iconv-lite";
+import { exec, execSync } from "child_process";
 
-function convertNumericCellsToTextUsingVisibleValue(sheet: XLSX.WorkSheet) {
-    if (!sheet["!ref"]) return;
-
-    const range = XLSX.utils.decode_range(sheet["!ref"]);
-
-    for (let r = range.s.r; r <= range.e.r; r++) {
-        for (let c = range.s.c; c <= range.e.c; c++) {
-            const addr = XLSX.utils.encode_cell({ r, c });
-            const cell = sheet[addr];
-            if (!cell || cell.t !== "n") continue;
-
-            if (typeof cell.w === "string") {
-                // ✔ ÚNICA FUENTE CONFIABLE
-                cell.v = cell.w;
-                cell.t = "s";
-                delete cell.w;
-            } else {
-                // ❌ No hay forma segura de reconstruir el valor original
-                // Decisión explícita (elige una):
-                // 1) Rechazar
-                // 2) Forzar texto con 2 decimales
-                // 3) Dejar como está
-                console.error("Valor con error de punto flotante de excel xls")
-                cell.v = cell.v.toFixed(2); // fallback consciente
-                cell.t = "s";
-            }
-        }
+function ensureFileExists(filePath: string) {
+    if (!fs.existsSync(filePath)) {
+        throw new Error(`Archivo no existe o es inválido: ${filePath}`);
     }
 }
 
+function generateTempXlsxPath(inputPath: string) {
+    const dir = path.dirname(inputPath);
+    const base = path.basename(inputPath, path.extname(inputPath));
+    return path.join(dir, `${base}.__tmp__.xlsx`);
+}
+
+function convertXlsToXlsxSync(inputPath: string): string {
+    const outputPath = generateTempXlsxPath(inputPath);
+    execSync(
+        `libreoffice --headless --convert-to xlsx "${inputPath}" --outdir "${path.dirname(outputPath)}"`,
+        { stdio: "ignore" }
+    );
+    return outputPath;
+}
+
+
 export const exportExcelToTxt = (
+    inputPath: string,
+    outputPath: string,
+    delimiter: string
+) => {
+    let tempXlsx: string | null = null;
+
+    try {
+        ensureFileExists(inputPath);
+
+        const ext = path.extname(inputPath).toLowerCase();
+        let xlsxPath = inputPath;
+
+        if (ext === ".xls") {
+            tempXlsx = convertXlsToXlsxSync(inputPath);
+            xlsxPath = tempXlsx;
+        } else if (ext !== ".xlsx") {
+            throw new Error("Formato no soportado. Solo .xls o .xlsx");
+        }
+
+        const workbook = new ExcelJS.Workbook();
+        workbook.xlsx.readFile(xlsxPath); // sync-like (interno)
+
+        const sheet = workbook.worksheets[0];
+        if (!sheet) throw new Error("No se encontró hoja válida");
+
+        const lines: string[] = [];
+
+        sheet.eachRow({ includeEmpty: true }, row => {
+            // @ts-ignore
+            const values = row.values.slice(1).map(v => (typeof v === "object" && v && "text" in v ? v.text : String(v ?? "")));
+
+            lines.push(values.join(delimiter));
+        });
+
+        const bom = Buffer.from([0xff, 0xfe]);
+        const buffer = Buffer.concat([bom, iconv.encode(lines.join("\n"), "utf16-le")]);
+        fs.writeFileSync(outputPath, buffer);
+
+        return { error: false, message: `Archivo exportado: ${outputPath}` };
+
+    } catch (err: any) {
+        return { error: true, message: err.message };
+
+    } finally {
+        if (tempXlsx && fs.existsSync(tempXlsx)) {
+            fs.unlinkSync(tempXlsx);
+        }
+    }
+};
+
+/*export const exportExcelToTxt = (
     inputPath: string,
     outputPath: string,
     delimiter: string
@@ -69,16 +114,16 @@ export const exportExcelToTxt = (
             };
         }
 
-        /* ==========================================
+        /!* ==========================================
            🔒 CONVERSIÓN GLOBAL NÚMEROS → TEXTO (cell.w)
-        ========================================== */
+        ========================================== *!/
         convertNumericCellsToTextUsingVisibleValue(sheet);
 
         const range = XLSX.utils.decode_range(sheet["!ref"]);
 
-        /* ==========================================
+        /!* ==========================================
            HEADERS
-        ========================================== */
+        ========================================== *!/
         const headers: string[] = [];
         for (let c = range.s.c; c <= range.e.c; c++) {
             const addr = XLSX.utils.encode_cell({ r: range.s.r, c });
@@ -86,9 +131,9 @@ export const exportExcelToTxt = (
             headers.push(cell ? String(cell.v).trim() : "");
         }
 
-        /* ==========================================
+        /!* ==========================================
            DATA (YA TODO ES TEXTO)
-        ========================================== */
+        ========================================== *!/
         const data: any[][] = XLSX.utils.sheet_to_json(sheet, {
             header: 1,
             defval: "",
@@ -112,9 +157,9 @@ export const exportExcelToTxt = (
             lines.push(line);
         }
 
-        /* ==========================================
+        /!* ==========================================
            WRITE TXT UTF-16 LE
-        ========================================== */
+        ========================================== *!/
         const txtContent = lines.join("\n");
         const bom = Buffer.from([0xff, 0xfe]);
         const buffer = Buffer.concat([bom, iconv.encode(txtContent, "utf16-le")]);
@@ -132,4 +177,4 @@ export const exportExcelToTxt = (
             message: "Error al exportar el archivo: " + error.message
         };
     }
-};
+};*/

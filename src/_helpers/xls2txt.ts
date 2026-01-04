@@ -16,7 +16,7 @@ function convertXlsToXlsxSync(inputPath: string): string {
     ensureFileExists(inputPath)
     const outputPathXlsx = inputPath + "x";
     execSync(
-        `libreoffice --headless --convert-to xlsx "${inputPath}" --outdir "${outputPathXlsx}"`,
+        `libreoffice --headless --convert-to xlsx "${inputPath}" --outdir "${path.dirname(outputPathXlsx)}"`,
         { stdio: "ignore" }
     );
     return outputPathXlsx;

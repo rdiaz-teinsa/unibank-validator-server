@@ -45,6 +45,7 @@ export const exportExcelToTxt = (
             console.log("Archivo de Entrada: ", inputPath)
             tempXlsx = convertXlsToXlsxSync(inputPath);
             xlsxPath = tempXlsx;
+            console.log("Ruta Final XLSX: ", xlsxPath);
         } else if (ext !== ".xlsx") {
             throw new Error("Formato no soportado. Solo .xls o .xlsx");
         }
@@ -75,7 +76,7 @@ export const exportExcelToTxt = (
 
     } finally {
         if (tempXlsx && fs.existsSync(tempXlsx)) {
-            fs.unlinkSync(tempXlsx);
+            // fs.unlinkSync(tempXlsx);
         }
     }
 };

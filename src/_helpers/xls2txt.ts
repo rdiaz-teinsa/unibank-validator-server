@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as iconv from "iconv-lite";
 
-function convertNumericCellsToTextUsingW(sheet: XLSX.WorkSheet) {
+/*function convertNumericCellsToTextUsingW(sheet: XLSX.WorkSheet) {
     if (!sheet["!ref"]) return;
 
     const range = XLSX.utils.decode_range(sheet["!ref"]);
@@ -23,6 +23,28 @@ function convertNumericCellsToTextUsingW(sheet: XLSX.WorkSheet) {
                 }
                 cell.t = "s";            // forzar texto
             }
+        }
+    }
+}*/
+
+function convertNumericCellsToSafeText(sheet: XLSX.WorkSheet) {
+    if (!sheet["!ref"]) return;
+
+    const range = XLSX.utils.decode_range(sheet["!ref"]);
+
+    for (let r = range.s.r; r <= range.e.r; r++) {
+        for (let c = range.s.c; c <= range.e.c; c++) {
+            const addr = XLSX.utils.encode_cell({ r, c });
+            const cell = sheet[addr];
+            if (!cell || cell.t !== "n") continue;
+
+            // ⚠️ usar formato explícito
+            const format = cell.z || "0.####################";
+            const safeText = XLSX.SSF.format(format, cell.v);
+
+            cell.v = safeText;
+            cell.t = "s";
+            delete cell.w;
         }
     }
 }
@@ -67,7 +89,7 @@ export const exportExcelToTxt = (
         /* ==========================================
            🔒 CONVERSIÓN GLOBAL NÚMEROS → TEXTO (cell.w)
         ========================================== */
-        convertNumericCellsToTextUsingW(sheet);
+        convertNumericCellsToSafeText(sheet);
 
         const range = XLSX.utils.decode_range(sheet["!ref"]);
 

@@ -23,7 +23,7 @@ function convertXlsToXlsxSync(inputPath: string): string {
         `libreoffice --headless --convert-to xlsx "${inputPath}" --outdir "${path.dirname(outputPathXlsx)}"`,
         { stdio: "ignore" }
     );
-    let savedPath = inputPath + "s";
+    let savedPath = inputPath + "x";
     fs.renameSync(savedPath, outputPathXlsx);
     return outputPathXlsx;
 }

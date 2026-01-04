@@ -14,11 +14,33 @@ function convertNumericCellsToSafeText(sheet: XLSX.WorkSheet) {
             const cell = sheet[addr];
             if (!cell || cell.t !== "n") continue;
 
-            // ⚠️ usar formato explícito
-            const format = cell.z || "0.####################";
-            const safeText = XLSX.SSF.format(format, cell.v);
+            const v = cell.v;
 
-            cell.v = safeText;
+            // 1️⃣ Redondeo defensivo (evita IEEE-754 noise)
+            const normalized = Number(v.toFixed(10));
+
+            // 2️⃣ Convertir a string sin notación científica
+            let text = normalized.toString();
+
+            // 3️⃣ Normalizar decimales
+            if (text.includes(".")) {
+                let [int, dec] = text.split(".");
+
+                // eliminar basura final (ej: 92999995)
+                dec = dec.replace(/0+$/, "");
+
+                // mínimo 2 decimales
+                if (dec.length < 2) {
+                    dec = dec.padEnd(2, "0");
+                }
+
+                text = `${int}.${dec}`;
+            } else {
+                // número entero → mínimo 2 decimales
+                text = `${text}.00`;
+            }
+
+            cell.v = text;
             cell.t = "s";
             delete cell.w;
         }

@@ -7,25 +7,24 @@ import { exec, execSync } from "child_process";
 
 function ensureFileExists(filePath: string) {
     if (!fs.existsSync(filePath)) {
-        console.error("Error con ruta del archivo");
         throw new Error(`Archivo no existe o es inválido: ${filePath}`);
     }
-    console.log("Archivo Encontrado.");
+}
+
+function generateTempXlsxPath(inputPath: string) {
+    const dir = path.dirname(inputPath);
+    const base = path.basename(inputPath, path.extname(inputPath));
+    return path.join(dir, `${base}.__tmp__.xlsx`);
 }
 
 function convertXlsToXlsxSync(inputPath: string): string {
-    ensureFileExists(inputPath)
-    const outputPathXlsx = inputPath + "x";
-    console.log("Ruta xlsx", outputPathXlsx);
-    console.log("FOLDER", path.dirname(outputPathXlsx))
+    const outputPathXlsx = generateTempXlsxPath(inputPath);
     execSync(
         `libreoffice --headless --convert-to xlsx "${inputPath}" --outdir "${path.dirname(outputPathXlsx)}"`,
         { stdio: "ignore" }
     );
-    console.log("Paso 3")
     return outputPathXlsx;
 }
-
 
 export const exportExcelToTxt = (
     inputPath: string,

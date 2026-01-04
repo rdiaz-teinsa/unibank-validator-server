@@ -89,7 +89,7 @@ export const exportExcelToTxt = async (
 
     } finally {
         if (tempXlsx && fs.existsSync(tempXlsx)) {
-            // fs.unlinkSync(tempXlsx);
+            fs.unlinkSync(tempXlsx);
         }
     }
 };

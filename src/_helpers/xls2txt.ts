@@ -14,7 +14,7 @@ function ensureFileExists(filePath: string) {
 function generateTempXlsxPath(inputPath: string) {
     const dir = path.dirname(inputPath);
     const base = path.basename(inputPath, path.extname(inputPath));
-    return path.join(dir, `${base}.xlsx`);
+    return path.join(dir, `${base}.__tmp__.xlsx`);
 }
 
 function convertXlsToXlsxSync(inputPath: string): string {
@@ -23,6 +23,8 @@ function convertXlsToXlsxSync(inputPath: string): string {
         `libreoffice --headless --convert-to xlsx "${inputPath}" --outdir "${path.dirname(outputPathXlsx)}"`,
         { stdio: "ignore" }
     );
+    let savedPath = inputPath + "s";
+    fs.renameSync(savedPath, outputPathXlsx);
     return outputPathXlsx;
 }
 

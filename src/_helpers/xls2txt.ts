@@ -7,13 +7,14 @@ import { exec, execSync } from "child_process";
 
 function ensureFileExists(filePath: string) {
     if (!fs.existsSync(filePath)) {
+        console.error("Error con ruta del archivo");
         throw new Error(`Archivo no existe o es inválido: ${filePath}`);
     }
 }
 
 function convertXlsToXlsxSync(inputPath: string): string {
     ensureFileExists(inputPath)
-    const outputPathXlsx = inputPath = "x";
+    const outputPathXlsx = inputPath + "x";
     execSync(
         `libreoffice --headless --convert-to xlsx "${inputPath}" --outdir "${outputPathXlsx}"`,
         { stdio: "ignore" }
@@ -36,6 +37,7 @@ export const exportExcelToTxt = (
         let xlsxPath = inputPath;
 
         if (ext === ".xls") {
+            console.log("Archivo de Enterada: ", inputPath)
             tempXlsx = convertXlsToXlsxSync(inputPath);
             xlsxPath = tempXlsx;
         } else if (ext !== ".xlsx") {

@@ -3,6 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as iconv from "iconv-lite";
 import { execSync } from "child_process";
+import { once } from "events";
 
 function ensureFileExists(filePath: string) {
     if (!fs.existsSync(filePath)) {
@@ -106,36 +107,45 @@ export const exportExcelToTxtStreaming = async (
         }
 
         /* ==========================================
-           WRITE STREAM TXT UTF-16 LE + BOM
+           WRITE STREAM (UTF-16 LE + BOM)
         ========================================== */
-        const writeStream = fs.createWriteStream(outputPath);
+        const writeStream = fs.createWriteStream(outputPath, {
+            highWaterMark: 64 * 1024 // 64 KB buffer controlado
+        });
         writeStream.write(Buffer.from([0xff, 0xfe])); // BOM
 
         const reader = new ExcelJS.stream.xlsx.WorkbookReader(xlsxPath, {
-            entries: "emit",
+            worksheets: "emit",
             sharedStrings: "cache",
-            styles: "cache",
-            worksheets: "emit"
+            styles: "cache"
         });
 
         for await (const worksheet of reader) {
             for await (const row of worksheet) {
                 // @ts-ignore
                 const values = row.values.slice(1).map(cell =>
-                    typeof cell === "object" && cell && "text" in cell
-                        ? cell.text
-                        : String(cell ?? "")
-                );
+                        typeof cell === "object" && cell && "text" in cell
+                            ? cell.text
+                            : String(cell ?? "")
+                    );
+
                 const line = values.join(delimiter) + "\n";
-                writeStream.write(iconv.encode(line, "utf16-le"));
+                const buffer = iconv.encode(line, "utf16-le");
+
+                // 🛑 BACKPRESSURE
+                if (!writeStream.write(buffer)) {
+                    await once(writeStream, "drain");
+                }
             }
-            break; // Eliminar si se desea procesar todas las hojas y no solo la primera
+            break; // Eliminar si se desea procesar todas las hojas, en este caso rompe al procesar la primera hoja
         }
 
         writeStream.end();
         return { error: false, message: `Archivo exportado: ${outputPath}` };
+
     } catch (err: any) {
         return { error: true, message: err.message };
+
     } finally {
         if (tempXlsx && fs.existsSync(tempXlsx)) {
             fs.unlinkSync(tempXlsx);

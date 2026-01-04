@@ -36,18 +36,17 @@
     "chardet": "^2.1.1",
     "cors": "^2.8.5",
     "csv-file-validator": "^2.1.0",
+    "events": "^3.3.0",
     "exceljs": "^4.4.0",
     "express": "^4.21.2",
     "firstline": "^2.0.2",
-    "fs": "^0.0.1-security",
     "iconv-lite": "^0.7.0",
     "jsonwebtoken": "^9.0.2",
     "jwks-rsa": "^3.2.0",
     "mssql": "^6.2.3",
     "node-fetch": "^2.6.7",
     "winston": "^3.3.3",
-    "winston-daily-rotate-file": "^4.5.5",
-    "xlsx": "^0.18.5"
+    "winston-daily-rotate-file": "^4.5.5"
   },
   "repository": {
     "type": "git",

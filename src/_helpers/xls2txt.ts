@@ -37,7 +37,7 @@ export const exportExcelToTxt = (
         let xlsxPath = inputPath;
 
         if (ext === ".xls") {
-            console.log("Archivo de Enterada: ", inputPath)
+            console.log("Archivo de Entrada: ", inputPath)
             tempXlsx = convertXlsToXlsxSync(inputPath);
             xlsxPath = tempXlsx;
         } else if (ext !== ".xlsx") {

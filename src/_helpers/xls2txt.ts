@@ -3,30 +3,6 @@ import * as fs from "fs";
 import * as path from "path";
 import * as iconv from "iconv-lite";
 
-/*function convertNumericCellsToTextUsingW(sheet: XLSX.WorkSheet) {
-    if (!sheet["!ref"]) return;
-
-    const range = XLSX.utils.decode_range(sheet["!ref"]);
-
-    for (let r = range.s.r; r <= range.e.r; r++) {
-        for (let c = range.s.c; c <= range.e.c; c++) {
-            const addr = XLSX.utils.encode_cell({ r, c });
-            const cell = sheet[addr];
-
-            if (!cell) continue;
-
-            // Solo celdas numéricas con representación visible
-            if (cell.t === "n") {
-                if (cell.w != null) {
-                    cell.v = String(cell.w); // 👈 valor visual exacto
-                    delete cell.w;           // evita reprocesos
-                }
-                cell.t = "s";            // forzar texto
-            }
-        }
-    }
-}*/
-
 function convertNumericCellsToSafeText(sheet: XLSX.WorkSheet) {
     if (!sheet["!ref"]) return;
 

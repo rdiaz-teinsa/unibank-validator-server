@@ -17,6 +17,7 @@ function convertXlsToXlsxSync(inputPath: string): string {
     ensureFileExists(inputPath)
     const outputPathXlsx = inputPath + "x";
     console.log("Ruta xlsx", outputPathXlsx);
+    console.log("FOLDER", path.dirname(outputPathXlsx))
     execSync(
         `libreoffice --headless --convert-to xlsx "${inputPath}" --outdir "${path.dirname(outputPathXlsx)}"`,
         { stdio: "ignore" }

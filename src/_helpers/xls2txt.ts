@@ -14,7 +14,7 @@ function ensureFileExists(filePath: string) {
 function generateTempXlsxPath(inputPath: string) {
     const dir = path.dirname(inputPath);
     const base = path.basename(inputPath, path.extname(inputPath));
-    return path.join(dir, `${base}.__tmp__.xlsx`);
+    return path.join(dir, `${base}.xlsx`);
 }
 
 function convertXlsToXlsxSync(inputPath: string): string {

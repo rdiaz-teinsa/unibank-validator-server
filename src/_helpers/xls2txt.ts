@@ -14,22 +14,14 @@ function convertXlsToXlsxSync(inputPath: string): string {
     const dir = path.dirname(inputPath);
     const base = path.basename(inputPath, path.extname(inputPath));
     const generatedPath = path.join(dir, `${base}.xlsx`);
-
     console.log("RUTA GENERADA: ", generatedPath);
-
-    const tempPath = path.join(dir, `${base}.__tmp__.xlsx`);
-
-    console.log("RUTA TEMPORAL: ", generatedPath);
-
     execSync(
         `libreoffice --headless --convert-to xlsx "${inputPath}" --outdir "${dir}"`,
         { stdio: "ignore" }
     );
-
     if (!fs.existsSync(generatedPath)) {
         throw new Error("LibreOffice no generó el archivo XLSX");
     }
-    // fs.renameSync(generatedPath, tempPath);
     return generatedPath;
 }
 
@@ -87,6 +79,63 @@ export const exportExcelToTxt = async (
     } catch (err: any) {
         return { error: true, message: err.message };
 
+    } finally {
+        if (tempXlsx && fs.existsSync(tempXlsx)) {
+            fs.unlinkSync(tempXlsx);
+        }
+    }
+};
+
+
+export const exportExcelToTxtStreaming = async (
+    inputPath: string,
+    outputPath: string,
+    delimiter: string
+) => {
+    let tempXlsx: string | null = null;
+
+    try {
+        const ext = path.extname(inputPath).toLowerCase();
+        let xlsxPath = inputPath;
+
+        if (ext === ".xls") {
+            tempXlsx = convertXlsToXlsxSync(inputPath);
+            xlsxPath = tempXlsx;
+        } else if (ext !== ".xlsx") {
+            throw new Error("Formato no soportado. Solo .xls o .xlsx");
+        }
+
+        /* ==========================================
+           WRITE STREAM TXT UTF-16 LE + BOM
+        ========================================== */
+        const writeStream = fs.createWriteStream(outputPath);
+        writeStream.write(Buffer.from([0xff, 0xfe])); // BOM
+
+        const reader = new ExcelJS.stream.xlsx.WorkbookReader(xlsxPath, {
+            entries: "emit",
+            sharedStrings: "cache",
+            styles: "cache",
+            worksheets: "emit"
+        });
+
+        for await (const worksheet of reader) {
+            for await (const row of worksheet) {
+                // @ts-ignore
+                const values = row.values.slice(1).map(cell =>
+                    typeof cell === "object" && cell && "text" in cell
+                        ? cell.text
+                        : String(cell ?? "")
+                );
+                const line = values.join(delimiter) + "\n";
+                writeStream.write(iconv.encode(line, "utf16-le"));
+            }
+            break; // Eliminar si se desea procesar todas las hojas y no solo la primera
+        }
+
+        writeStream.end();
+        return { error: false, message: `Archivo exportado: ${outputPath}` };
+    } catch (err: any) {
+        return { error: true, message: err.message };
     } finally {
         if (tempXlsx && fs.existsSync(tempXlsx)) {
             fs.unlinkSync(tempXlsx);

@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as iconv from "iconv-lite";
 
-function convertNumericCellsToSafeText(sheet: XLSX.WorkSheet) {
+function convertNumericCellsToTextUsingVisibleValue(sheet: XLSX.WorkSheet) {
     if (!sheet["!ref"]) return;
 
     const range = XLSX.utils.decode_range(sheet["!ref"]);
@@ -14,39 +14,24 @@ function convertNumericCellsToSafeText(sheet: XLSX.WorkSheet) {
             const cell = sheet[addr];
             if (!cell || cell.t !== "n") continue;
 
-            const v = cell.v;
-
-            // 1️⃣ Redondeo defensivo (evita IEEE-754 noise)
-            const normalized = Number(v.toFixed(10));
-
-            // 2️⃣ Convertir a string sin notación científica
-            let text = normalized.toString();
-
-            // 3️⃣ Normalizar decimales
-            if (text.includes(".")) {
-                let [int, dec] = text.split(".");
-
-                // eliminar basura final (ej: 92999995)
-                dec = dec.replace(/0+$/, "");
-
-                // mínimo 2 decimales
-                if (dec.length < 2) {
-                    dec = dec.padEnd(2, "0");
-                }
-
-                text = `${int}.${dec}`;
+            if (typeof cell.w === "string") {
+                // ✔ ÚNICA FUENTE CONFIABLE
+                cell.v = cell.w;
+                cell.t = "s";
+                delete cell.w;
             } else {
-                // número entero → mínimo 2 decimales
-                text = `${text}.00`;
+                // ❌ No hay forma segura de reconstruir el valor original
+                // Decisión explícita (elige una):
+                // 1) Rechazar
+                // 2) Forzar texto con 2 decimales
+                // 3) Dejar como está
+                console.error("Valor con error de punto flotante de excel xls")
+                cell.v = cell.v.toFixed(2); // fallback consciente
+                cell.t = "s";
             }
-
-            cell.v = text;
-            cell.t = "s";
-            delete cell.w;
         }
     }
 }
-
 
 export const exportExcelToTxt = (
     inputPath: string,
@@ -87,7 +72,7 @@ export const exportExcelToTxt = (
         /* ==========================================
            🔒 CONVERSIÓN GLOBAL NÚMEROS → TEXTO (cell.w)
         ========================================== */
-        convertNumericCellsToSafeText(sheet);
+        convertNumericCellsToTextUsingVisibleValue(sheet);
 
         const range = XLSX.utils.decode_range(sheet["!ref"]);
 

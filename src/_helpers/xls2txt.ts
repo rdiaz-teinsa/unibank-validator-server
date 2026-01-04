@@ -10,15 +10,18 @@ function ensureFileExists(filePath: string) {
         console.error("Error con ruta del archivo");
         throw new Error(`Archivo no existe o es inválido: ${filePath}`);
     }
+    console.log("Archivo Encontrado.");
 }
 
 function convertXlsToXlsxSync(inputPath: string): string {
     ensureFileExists(inputPath)
     const outputPathXlsx = inputPath + "x";
+    console.log("Ruta xlsx", outputPathXlsx);
     execSync(
         `libreoffice --headless --convert-to xlsx "${inputPath}" --outdir "${path.dirname(outputPathXlsx)}"`,
         { stdio: "ignore" }
     );
+    console.log("Paso 3")
     return outputPathXlsx;
 }
 

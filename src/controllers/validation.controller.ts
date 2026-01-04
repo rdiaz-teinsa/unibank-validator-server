@@ -117,7 +117,7 @@ export const postCargarDatosAtomos = async (req: Request, res: Response) => {
             let txtPath: string = filePathRoot + '/' + req.body.codBanco + '/' + req.body.fechaCorte + '/' + atom[0].ARCHIVO;
 
             if(convert) {
-                let conversion: any = exportExcelToTxt(xlsPath, txtPath, "~");
+                let conversion: any = await exportExcelToTxt(xlsPath, txtPath, "~");
                 console.info('CONVERSION: ', conversion)
                 // @ts-ignore
                 if (conversion.error === true) return res.status(400).json({

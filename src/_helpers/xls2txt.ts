@@ -1,7 +1,7 @@
 import ExcelJS from "exceljs";
 import * as fs from "fs";
 import * as path from "path";
-import * as iconv from "iconv-lite";
+import iconv from 'iconv-lite';
 import { execSync } from "child_process";
 import { once } from "events";
 
@@ -88,7 +88,7 @@ export const exportExcelToTxt = async (
 };
 
 
-export const exportExcelToTxtStreaming = async (
+/**/export const exportExcelToTxtStreaming = async (
     inputPath: string,
     outputPath: string,
     delimiter: string

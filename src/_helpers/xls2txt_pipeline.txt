@@ -1,0 +1,110 @@
+import ExcelJS from "exceljs";
+import * as fs from "fs";
+import * as path from "path";
+import iconv from 'iconv-lite';
+import { execSync } from "child_process";
+import { Readable, Transform } from "stream";
+import { pipeline } from "stream/promises";
+
+
+function convertXlsToXlsxSync(inputPath: string): string {
+    const dir = path.dirname(inputPath);
+    const base = path.basename(inputPath, path.extname(inputPath));
+    const generated = path.join(dir, `${base}.xlsx`);
+
+    execSync(
+        `libreoffice --headless --convert-to xlsx "${inputPath}" --outdir "${dir}"`,
+        { stdio: "ignore" }
+    );
+
+    if (!fs.existsSync(generated)) {
+        throw new Error("LibreOffice no generó el XLSX");
+    }
+
+    return generated;
+};
+
+
+async function* excelRowGenerator(xlsxPath: string, delimiter: string) {
+    const reader = new ExcelJS.stream.xlsx.WorkbookReader(xlsxPath, {
+        worksheets: "emit",
+        sharedStrings: "cache",
+        styles: "cache"
+    });
+
+    for await (const worksheet of reader) {
+        for await (const row of worksheet) {
+            // @ts-ignore
+            const values = row.values.slice(1).map(cell =>
+                    typeof cell === "object" && cell && "text" in cell
+                        ? cell.text
+                        : String(cell ?? "")
+                );
+
+            yield values.join(delimiter) + "\n";
+        }
+        break; // Se debe eliminar si de desean procesar todas las hojas, en este caso rompe tras procesar la primera hoja
+    }
+};
+
+
+const utf16Transform = new Transform({
+    transform(chunk: string, _enc, cb) {
+        try {
+            const buffer = iconv.encode(chunk, "utf16-le");
+            cb(null, buffer);
+        } catch (err) {
+            cb(err as Error);
+        }
+    }
+});
+
+
+export const exportExcelToTxtPipeline = async (
+    inputPath: string,
+    outputPath: string,
+    delimiter: string
+) => {
+    let tempXlsx: string | null = null;
+
+    try {
+        const ext = path.extname(inputPath).toLowerCase();
+        let xlsxPath = inputPath;
+
+        if (ext === ".xls") {
+            tempXlsx = convertXlsToXlsxSync(inputPath);
+            xlsxPath = tempXlsx;
+        } else if (ext !== ".xlsx") {
+            throw new Error("Formato no soportado. Solo .xls o .xlsx");
+        }
+
+        const readable = Readable.from(
+            excelRowGenerator(xlsxPath, delimiter),
+            { encoding: "utf8" }
+        );
+
+        const writeStream = fs.createWriteStream(outputPath, {
+            highWaterMark: 64 * 1024
+        });
+
+        // BOM UTF-16 LE
+        writeStream.write(Buffer.from([0xff, 0xfe]));
+
+        await pipeline(
+            readable,
+            utf16Transform,
+            writeStream
+        );
+
+        return { error: false, message: `Archivo exportado: ${outputPath}` };
+
+    } catch (err: any) {
+        return { error: true, message: err.message };
+
+    } finally {
+        if (tempXlsx && fs.existsSync(tempXlsx)) {
+            fs.unlinkSync(tempXlsx);
+        }
+    }
+};
+
